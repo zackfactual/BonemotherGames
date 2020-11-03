@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace BonemotherGames2.Models
+namespace BonemotherGames.Models
 {
     public partial class BonemotherGamesContext : DbContext
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BonemotherGames2.Models
+namespace BonemotherGames.Models
 {
     public partial class CreatureSize
     {

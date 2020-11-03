@@ -2,25 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BonemotherGames2.Models;
-using BonemotherGames2.Services;
-using Microsoft.AspNetCore.Http;
+using BonemotherGames.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace BonemotherGames2.Controllers
+namespace BonemotherGames.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class IRetainerController : ControllerBase
+    public class RetainerController : ControllerBase
     {
-        private readonly ILogger<IRetainerController> _logger;
-        private readonly IRetainer _retainer;
-        public IRetainerController(ILogger<IRetainerController> logger,
-            IRetainer retainer)
+        private readonly ILogger<RetainerController> _logger;
+
+        public RetainerController(ILogger<RetainerController> logger)
         {
             _logger = logger;
-            _retainer = retainer;
         }
 
         [HttpGet]
@@ -29,14 +25,14 @@ namespace BonemotherGames2.Controllers
             List<Retainer> retainers = new List<Retainer>();
 
             Retainer retainer1 = new Retainer();
-            retainer1.RetainerClass = _retainer.GetRandomRetainerClass();
-            retainer1.Ancestry = _retainer.GetRandomAncestry();
-            retainer1.Name = _retainer.GetRandomName();
+            retainer1.RetainerClass = retainer1.GetRandomRetainerClass();
+            retainer1.Ancestry = retainer1.GetRandomAncestry();
+            retainer1.Name = retainer1.GetRandomName();
 
             Retainer retainer2 = new Retainer();
-            retainer2.RetainerClass = _retainer.GetRandomRetainerClass();
-            retainer2.Ancestry = _retainer.GetRandomAncestry();
-            retainer2.Name = _retainer.GetRandomName();
+            retainer2.RetainerClass = retainer2.GetRandomRetainerClass();
+            retainer2.Ancestry = retainer2.GetRandomAncestry();
+            retainer2.Name = retainer2.GetRandomName();
 
             retainers.Add(retainer1);
             retainers.Add(retainer2);

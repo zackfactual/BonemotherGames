@@ -1,11 +1,11 @@
-﻿using BonemotherGames2.Models;
+﻿using BonemotherGames.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 
-namespace BonemotherGames2.Services
+namespace BonemotherGames.Services
 {
     public class Retainer : IRetainer
     {

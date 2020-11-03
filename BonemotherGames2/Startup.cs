@@ -11,7 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using VueCliMiddleware;
 
-namespace BonemotherGames2
+namespace BonemotherGames
 {
     public class Startup
     {

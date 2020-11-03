@@ -44,14 +44,13 @@ namespace BonemotherGames2.Services
                 return randomAncestry;
             }
         }
-        public Name GetRandomName(Ancestry ancestry)
+        public Name GetRandomName()
         {
             using (var ctx = new BonemotherGamesContext())
             {
                 var rand = new Random();
-                var ancestralNames = ctx.NameAncestry.Where(x => x.AncestryId == ancestry.AncestryId).ToList();
-                var ancestralName = ancestralNames[rand.Next(ancestralNames.Count)];
-                var name = ctx.Name.First(x => x.NameId == ancestralName.NameId);
+                var names = ctx.Name.ToList();
+                var name = names[rand.Next(names.Count)];
                 return name;
             }
         }

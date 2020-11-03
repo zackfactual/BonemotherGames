@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BonemotherGames2.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -24,16 +25,23 @@ namespace BonemotherGames2.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public IEnumerable<Retainer> Get()
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+            List<Retainer> retainers = new List<Retainer>();
+
+            Retainer retainer1 = new Retainer();
+            retainer1.RetainerClass = retainer1.GetRandomRetainerClass();
+            retainer1.Ancestry = retainer1.GetRandomAncestry();
+            retainer1.Name = retainer1.GetRandomName();
+
+            Retainer retainer2 = new Retainer();
+            retainer2.RetainerClass = retainer2.GetRandomRetainerClass();
+            retainer2.Ancestry = retainer2.GetRandomAncestry();
+            retainer2.Name = retainer2.GetRandomName();
+
+            retainers.Add(retainer1);
+            retainers.Add(retainer2);
+            return retainers;
         }
     }
 }

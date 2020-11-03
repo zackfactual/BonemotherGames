@@ -10,6 +10,6 @@ namespace BonemotherGames2.Services
     {
         public RetainerClass GetRandomRetainerClass();
         public Ancestry GetRandomAncestry();
-        public Name GetRandomName(Ancestry ancestry);
+        public Name GetRandomName();
     }
 }

@@ -31,12 +31,12 @@ namespace BonemotherGames2.Controllers
             Retainer retainer1 = new Retainer();
             retainer1.RetainerClass = _retainer.GetRandomRetainerClass();
             retainer1.Ancestry = _retainer.GetRandomAncestry();
-            retainer1.Name = _retainer.GetRandomName(retainer1.Ancestry);
+            retainer1.Name = _retainer.GetRandomName();
 
             Retainer retainer2 = new Retainer();
             retainer2.RetainerClass = _retainer.GetRandomRetainerClass();
             retainer2.Ancestry = _retainer.GetRandomAncestry();
-            retainer2.Name = _retainer.GetRandomName(retainer2.Ancestry);
+            retainer2.Name = _retainer.GetRandomName();
 
             retainers.Add(retainer1);
             retainers.Add(retainer2);

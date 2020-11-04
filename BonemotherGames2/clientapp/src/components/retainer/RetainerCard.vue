@@ -23,22 +23,33 @@
         <h4>Special Actions</h4>
         <div>
             <span class="detail-label">
-                3rd-Level ({{ retainerData.Actions[1].UsesPerDay }}/day<span v-if="retainerData.Actions[1].ActionTypeName.toLowerCase() != 'action'">, {{ retainerData.Actions[1].ActionTypeName }}</span>): </span>
+                3rd-Level ({{ retainerData.Actions[1].UsesPerDay }}/day<span v-if="retainerData.Actions[1].ActionTypeName.toLowerCase() != 'action'">, {{ retainerData.Actions[1].ActionTypeName }}</span>):
+            </span>
             <span>
                 <span class="action-name">{{ retainerData.Actions[1].ActionName }}</span><span v-if="retainerData.Actions[1].ActionDescription != null">. {{ retainerData.Actions[1].ActionDescription }}</span>
-</span>
+            </span>
         </div>
         <div>
             <span class="detail-label">5th-Level ({{ retainerData.Actions[2].UsesPerDay }}/day<span v-if="retainerData.Actions[2].ActionTypeName.toLowerCase() != 'action'">, {{ retainerData.Actions[2].ActionTypeName }}</span>): </span>
             <span>
                 <span class="action-name">{{ retainerData.Actions[2].ActionName }}</span><span v-if="retainerData.Actions[2].ActionDescription != null">. {{ retainerData.Actions[2].ActionDescription }}</span>
-</span>
+            </span>
         </div>
         <div>
             <span class="detail-label">7th-Level ({{ retainerData.Actions[3].UsesPerDay }}/day<span v-if="retainerData.Actions[3].ActionTypeName.toLowerCase() != 'action'">, {{ retainerData.Actions[3].ActionTypeName }}</span>): </span>
             <span>
                 <span class="action-name">{{ retainerData.Actions[3].ActionName }}</span><span v-if="retainerData.Actions[3].ActionDescription != null">. {{ retainerData.Actions[3].ActionDescription }}</span>
-</span>
+            </span>
+        </div>
+        <h4 v-if="retainerData.AncestryTraits && retainerData.AncestryTraits.length > 0">{{ retainerData.Ancestry.AncestryName }} Traits</h4>
+        <div v-for="trait in retainerData.AncestryTraits" :key="`trait-${trait.TraitId}`">
+            <span class="detail-label">{{ trait.TraitName }}: </span>
+            <span>{{ trait.TraitDescription }}</span>
+        </div>
+        <h4 v-if="retainerData.SubancestryTraits && retainerData.SubancestryTraits.length > 0">{{ retainerData.Subancestry.SubancestryName }} {{ retainerData.Ancestry.AncestryName }} Traits</h4>
+        <div v-for="trait in retainerData.SubancestryTraits" :key="`trait-${trait.TraitId}`">
+            <span class="detail-label">{{ trait.TraitName }}: </span>
+            <span>{{ trait.TraitDescription }}</span>
         </div>
     </div>
 </template>

@@ -1,9 +1,5 @@
 ﻿using BonemotherGames2.Entities;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Threading.Tasks;
 
 namespace BonemotherGames2.Services
 {
@@ -17,17 +13,6 @@ namespace BonemotherGames2.Services
         public Follower()
         {
 
-        }
-
-        public Follower(FollowerChart followerChart,
-            int leaderClassId,
-            int lowRoll,
-            int highRoll)
-        {
-            FollowerChart = followerChart;
-            LeaderClassId = leaderClassId;
-            LowRoll = lowRoll;
-            HighRoll = highRoll;
         }
 
         public Follower ConstructFollowerFromFollowerChart(Follower follower, FollowerChart followerChart)

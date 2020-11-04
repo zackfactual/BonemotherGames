@@ -17,28 +17,12 @@ namespace BonemotherGames.Services
         public List<Ability> Saves { get; set; }
         public List<Skill> Skills { get; set; }
         public List<SpecialAction> Actions { get; set; }
+        public List<RetainerTrait> AncestryTraits { get; set; }
+        public List<RetainerTrait> SubancestryTraits { get; set; }
 
         public Retainer()
         {
 
-        }
-        public Retainer(RetainerClass retainerClass,
-            Ancestry ancestry,
-            Subancestry subancestry,
-            string name,
-            List<Ability> primaryAbilities,
-            List<Ability> saves,
-            List<Skill> skills,
-            List<SpecialAction> actions)
-        {
-            RetainerClass = retainerClass;
-            Ancestry = ancestry;
-            Subancestry = subancestry;
-            Name = name;
-            PrimaryAbilities = primaryAbilities;
-            Saves = saves;
-            Skills = skills;
-            Actions = actions;
         }
 
         public Retainer ConstructRetainer(Retainer retainer)
@@ -59,6 +43,8 @@ namespace BonemotherGames.Services
                 }
                 
             }
+            retainer.AncestryTraits = GetAncestryTraits(retainer.Ancestry.AncestryId);
+            retainer.SubancestryTraits = retainer.Subancestry != null ? GetSubancestryTraits(retainer.Subancestry.SubancestryId) : null;
             retainer.Name = retainer.Subancestry == null ? CharacterNameGenerator.GetRandomAncestralName(retainer.Ancestry.AncestryId, null) : 
                 CharacterNameGenerator.GetRandomAncestralName(retainer.Ancestry.AncestryId, retainer.Subancestry.SubancestryId);
             retainer.PrimaryAbilities = retainer.GetPrimaryAbilities(retainer.RetainerClass.RetainerClassId);
@@ -68,6 +54,37 @@ namespace BonemotherGames.Services
 
             return retainer;
         }
+
+        private List<RetainerTrait> GetAncestryTraits(int ancestryId)
+        {
+            List<RetainerTrait> retainerTraits = new List<RetainerTrait>();
+            using (var ctx = new BonemotherGamesContext())
+            {
+                var ancestralRetainerTraits = ctx.AncestryRetainerTrait.Where(x => x.AncestryId == ancestryId);
+                foreach (var ancestralRetainerTrait in ancestralRetainerTraits)
+                {
+                    var retainerTrait = ctx.RetainerTrait.Where(x => x.TraitId == ancestralRetainerTrait.TraitId).First();
+                    retainerTraits.Add(retainerTrait);
+                }
+            }
+            return retainerTraits;
+        }
+
+        private List<RetainerTrait> GetSubancestryTraits(int subancestryId)
+        {
+            List<RetainerTrait> retainerTraits = new List<RetainerTrait>();
+            using (var ctx = new BonemotherGamesContext())
+            {
+                var subancestralRetainerTraits = ctx.SubancestryRetainerTrait.Where(x => x.SubancestryId == subancestryId);
+                foreach (var subancestralRetainerTrait in subancestralRetainerTraits)
+                {
+                    var retainerTrait = ctx.RetainerTrait.Where(x => x.TraitId == subancestralRetainerTrait.TraitId).First();
+                    retainerTraits.Add(retainerTrait);
+                }
+            }
+            return retainerTraits;
+        }
+
         public RetainerClass GetRetainerClass(int retainerClassId)
         {
             using (var ctx = new BonemotherGamesContext())

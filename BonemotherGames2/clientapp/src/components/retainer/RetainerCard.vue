@@ -14,7 +14,32 @@
             <span class="detail-label">Skills: </span>
             <span>{{ formattedSkills }}</span>
         </div>
+        <div>
+            <span class="detail-label">Signature Attack: </span>
+            <span>
+                <span class="action-name">{{ retainerData.Actions[0].ActionName }}:</span> {{ retainerData.Actions[0].ActionDescription }}
+            </span>
+        </div>
         <h4>Special Actions</h4>
+        <div>
+            <span class="detail-label">
+                3rd-Level ({{ retainerData.Actions[1].UsesPerDay }}/day<span v-if="retainerData.Actions[1].ActionTypeName.toLowerCase() != 'action'">, {{ retainerData.Actions[1].ActionTypeName }}</span>): </span>
+            <span>
+                <span class="action-name">{{ retainerData.Actions[1].ActionName }}.</span> {{ retainerData.Actions[1].ActionDescription }}
+            </span>
+        </div>
+        <div>
+            <span class="detail-label">5th-Level ({{ retainerData.Actions[2].UsesPerDay }}/day<span v-if="retainerData.Actions[2].ActionTypeName.toLowerCase() != 'action'">, {{ retainerData.Actions[2].ActionTypeName }}</span>): </span>
+            <span>
+                <span class="action-name">{{ retainerData.Actions[2].ActionName }}.</span> {{ retainerData.Actions[2].ActionDescription }}
+            </span>
+        </div>
+        <div>
+            <span class="detail-label">7th-Level ({{ retainerData.Actions[3].UsesPerDay }}/day<span v-if="retainerData.Actions[3].ActionTypeName.toLowerCase() != 'action'">, {{ retainerData.Actions[3].ActionTypeName }}</span>): </span>
+            <span>
+                <span class="action-name">{{ retainerData.Actions[3].ActionName }}.</span> {{ retainerData.Actions[3].ActionDescription }}
+            </span>
+        </div>
     </div>
 </template>
 
@@ -36,7 +61,7 @@ export default {
                 }
             })
             return skillString
-        }    
+        }
     },
     methods: {
         formatAbilities(abilityArray) {
@@ -65,6 +90,10 @@ export default {
     font-weight: 600;
     text-transform: uppercase;
     color: #2B2E50;
+}
+
+.action-name {
+    font-style: italic;
 }
 
 h4 {

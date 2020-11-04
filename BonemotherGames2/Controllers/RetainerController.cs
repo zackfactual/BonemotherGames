@@ -27,7 +27,7 @@ namespace BonemotherGames.Controllers
             retainer.PrimaryAbilities = retainer.GetPrimaryAbilities(retainer.RetainerClass);
             retainer.Saves = retainer.GetSaves(retainer.RetainerClass);
             retainer.Skills = retainer.GetSkills(retainer.RetainerClass);
-            retainer.Actions = retainer.GetRetainerActions(retainer.RetainerClass);
+            retainer.Actions = retainer.GetActions(retainer.RetainerClass);
 
             return JsonSerializer.Serialize(retainer);
         }

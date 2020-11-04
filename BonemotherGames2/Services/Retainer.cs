@@ -1,4 +1,5 @@
 ﻿using BonemotherGames2.Entities;
+using BonemotherGames2.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace BonemotherGames.Services
         public List<Ability> PrimaryAbilities { get; set; }
         public List<Ability> Saves { get; set; }
         public List<Skill> Skills { get; set; }
-        public List<RetainerAction> Actions { get; set; }
+        public List<SpecialAction> Actions { get; set; }
         public Retainer()
         {
 
@@ -24,7 +25,7 @@ namespace BonemotherGames.Services
             List<Ability> primaryAbilities,
             List<Ability> saves,
             List<Skill> skills,
-            List<RetainerAction> actions) 
+            List<SpecialAction> actions) 
         {
             RetainerClass = retainerClass;
             Ancestry = ancestry;
@@ -112,16 +113,23 @@ namespace BonemotherGames.Services
             }
         }
 
-        public List<RetainerAction> GetRetainerActions(RetainerClass retainerClass)
+        public List<SpecialAction> GetActions(RetainerClass retainerClass)
         {
             using (var ctx = new BonemotherGamesContext())
             {
-                var actions = new List<RetainerAction>();
+                var actions = new List<SpecialAction>();
+                var retainerActions = new List<RetainerAction>();
                 var retainerClassActions = ctx.RetainerClassRetainerAction.Where(x => x.RetainerClassId == retainerClass.RetainerClassId).ToList();
-                foreach (var retainerClassAction in retainerClassActions)
+                foreach (var rca in retainerClassActions)
                 {
-                    var action = ctx.RetainerAction.Where(x => x.ActionId == retainerClassAction.ActionId).First();
-                    actions.Add(action);
+                    var actionId = rca.ActionId;
+                    var levelAttained = rca.LevelAttained;
+                    var usesPerDay = rca.UsesPerDay;
+                    var retainerAction = ctx.RetainerAction.Where(x => x.ActionId == rca.ActionId).First();
+                    var actionName = retainerAction.ActionName;
+                    var actionTypeName = ctx.ActionType.Where(x => x.ActionTypeId == retainerAction.ActionTypeId).Select(x => x.ActionTypeName).First();
+                    var actionDescription = retainerAction.ActionDescription;
+                    actions.Add(new SpecialAction(actionId, levelAttained, usesPerDay, actionName, actionTypeName, actionDescription)); 
                 }
                 return actions;
             }

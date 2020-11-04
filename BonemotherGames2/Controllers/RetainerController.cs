@@ -22,18 +22,16 @@ namespace BonemotherGames.Controllers
         {
             List<Retainer> retainers = new List<Retainer>();
 
-            Retainer retainer1 = new Retainer();
-            retainer1.RetainerClass = retainer1.GetRandomRetainerClass();
-            retainer1.Ancestry = retainer1.GetRandomAncestry();
-            retainer1.Name = retainer1.GetRandomName();
+            Retainer retainer = new Retainer();
+            retainer.RetainerClass = retainer.GetRandomRetainerClass();
+            retainer.Ancestry = retainer.GetRandomAncestry();
+            retainer.Name = retainer.GetRandomName();
+            retainer.PrimaryAbilities = retainer.GetPrimaryAbilities(retainer.RetainerClass);
+            retainer.Saves = retainer.GetSaves(retainer.RetainerClass);
+            retainer.Skills = retainer.GetSkills(retainer.RetainerClass);
+            retainer.Actions = retainer.GetRetainerActions(retainer.RetainerClass);
 
-            Retainer retainer2 = new Retainer();
-            retainer2.RetainerClass = retainer2.GetRandomRetainerClass();
-            retainer2.Ancestry = retainer2.GetRandomAncestry();
-            retainer2.Name = retainer2.GetRandomName();
-
-            retainers.Add(retainer1);
-            retainers.Add(retainer2);
+            retainers.Add(retainer);
             return JsonSerializer.Serialize(retainers);
         }
     }

@@ -1,6 +1,6 @@
 ﻿<template>
     <div class="retainer-page">
-        <retainer-card :retainer-data="randomRetainers ? randomRetainers[0] : {}" />
+        <retainer-card v-if="randomRetainer" :retainer-data="randomRetainer" />
     </div>
 </template>
 
@@ -15,13 +15,13 @@ export default {
     },
     data () {
         return {
-            randomRetainers: null
+            randomRetainer: null
         }
     },
     beforeCreate () {
         axios.get('Retainer')
             .then(result => {
-                this.randomRetainers = result.data
+                this.randomRetainer = result.data
             })
     }
 }

@@ -20,8 +20,6 @@ namespace BonemotherGames.Controllers
         [HttpGet]
         public string Get()
         {
-            List<Retainer> retainers = new List<Retainer>();
-
             Retainer retainer = new Retainer();
             retainer.RetainerClass = retainer.GetRandomRetainerClass();
             retainer.Ancestry = retainer.GetRandomAncestry();
@@ -31,8 +29,7 @@ namespace BonemotherGames.Controllers
             retainer.Skills = retainer.GetSkills(retainer.RetainerClass);
             retainer.Actions = retainer.GetRetainerActions(retainer.RetainerClass);
 
-            retainers.Add(retainer);
-            return JsonSerializer.Serialize(retainers);
+            return JsonSerializer.Serialize(retainer);
         }
     }
 }

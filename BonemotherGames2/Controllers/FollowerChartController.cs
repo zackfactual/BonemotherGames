@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using BonemotherGames.Models;
-using Microsoft.AspNetCore.Http;
+using BonemotherGames2.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BonemotherGames2.Controllers

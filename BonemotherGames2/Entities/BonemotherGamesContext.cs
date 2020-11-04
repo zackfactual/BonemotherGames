@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace BonemotherGames.Models
+namespace BonemotherGames2.Entities
 {
     public partial class BonemotherGamesContext : DbContext
     {
@@ -25,9 +27,7 @@ namespace BonemotherGames.Models
         public virtual DbSet<CreatureSize> CreatureSize { get; set; }
         public virtual DbSet<FollowerChart> FollowerChart { get; set; }
         public virtual DbSet<FollowerSource> FollowerSource { get; set; }
-        public virtual DbSet<FollowerSourceAllyLookup> FollowerSourceAllyLookup { get; set; }
         public virtual DbSet<FollowerSourceFollowerChart> FollowerSourceFollowerChart { get; set; }
-        public virtual DbSet<FollowerSourcePaladinMountLookup> FollowerSourcePaladinMountLookup { get; set; }
         public virtual DbSet<FollowerType> FollowerType { get; set; }
         public virtual DbSet<Language> Language { get; set; }
         public virtual DbSet<Name> Name { get; set; }
@@ -56,7 +56,7 @@ namespace BonemotherGames.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=localhost\\sqlexpress;Database=BonemotherGames;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=localhost\\SQLExpress;Database=BonemotherGames;Trusted_Connection=True;");
             }
         }
 
@@ -201,6 +201,11 @@ namespace BonemotherGames.Models
                     .IsRequired()
                     .HasMaxLength(64);
 
+                entity.HasOne(d => d.AllyLookup)
+                    .WithMany(p => p.FollowerChart)
+                    .HasForeignKey(d => d.AllyLookupId)
+                    .HasConstraintName("FK_FollowerChartAllyLookupId");
+
                 entity.HasOne(d => d.Ancestry)
                     .WithMany(p => p.FollowerChart)
                     .HasForeignKey(d => d.AncestryId)
@@ -211,6 +216,11 @@ namespace BonemotherGames.Models
                     .HasForeignKey(d => d.FollowerTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FollowerTypeId");
+
+                entity.HasOne(d => d.PaladinMountLookup)
+                    .WithMany(p => p.FollowerChart)
+                    .HasForeignKey(d => d.PaladinMountLookupId)
+                    .HasConstraintName("FK_FollowerChartPaladinMountLookupId");
 
                 entity.HasOne(d => d.RetainerClass)
                     .WithMany(p => p.FollowerChart)
@@ -237,25 +247,6 @@ namespace BonemotherGames.Models
                     .HasDefaultValueSql("((1))");
             });
 
-            modelBuilder.Entity<FollowerSourceAllyLookup>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToTable("FollowerSource_AllyLookup");
-
-                entity.HasOne(d => d.AllyLookup)
-                    .WithMany()
-                    .HasForeignKey(d => d.AllyLookupId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_AllyLookup");
-
-                entity.HasOne(d => d.LeaderClass)
-                    .WithMany()
-                    .HasForeignKey(d => d.LeaderClassId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_AllyRollerSource");
-            });
-
             modelBuilder.Entity<FollowerSourceFollowerChart>(entity =>
             {
                 entity.HasNoKey();
@@ -273,25 +264,6 @@ namespace BonemotherGames.Models
                     .HasForeignKey(d => d.LeaderClassId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FollowerRollerSource");
-            });
-
-            modelBuilder.Entity<FollowerSourcePaladinMountLookup>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToTable("FollowerSource_PaladinMountLookup");
-
-                entity.HasOne(d => d.LeaderClass)
-                    .WithMany()
-                    .HasForeignKey(d => d.LeaderClassId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PaladinMountRollerSource");
-
-                entity.HasOne(d => d.PaladinMountLookup)
-                    .WithMany()
-                    .HasForeignKey(d => d.PaladinMountLookupId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PaladinMountLookup");
             });
 
             modelBuilder.Entity<FollowerType>(entity =>

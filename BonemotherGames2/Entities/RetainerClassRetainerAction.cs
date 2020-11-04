@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BonemotherGames.Models
+namespace BonemotherGames2.Entities
 {
     public partial class RetainerClassRetainerAction
     {

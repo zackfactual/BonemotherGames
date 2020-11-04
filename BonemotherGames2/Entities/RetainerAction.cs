@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BonemotherGames2.Entities
+﻿namespace BonemotherGames2.Entities
 {
     public partial class RetainerAction
     {
@@ -10,6 +7,7 @@ namespace BonemotherGames2.Entities
         public int ActionTypeId { get; set; }
         public string ActionDescription { get; set; }
         public string OutsideLink { get; set; }
+
         public virtual ActionType ActionType { get; set; }
     }
 }

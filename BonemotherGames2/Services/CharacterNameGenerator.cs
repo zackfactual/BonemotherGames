@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BonemotherGames2.Services
 {
-    public static class CharacterName
+    public static class CharacterNameGenerator
     {
         public static string GetRandomAncestralName(int ancestryId, int? subancestryId)
         {

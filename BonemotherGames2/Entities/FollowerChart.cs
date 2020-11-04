@@ -16,6 +16,7 @@ namespace BonemotherGames2.Entities
         public int? AllyLookupId { get; set; }
         public int? PaladinMountLookupId { get; set; }
         public bool? IsAmbassador { get; set; }
+
         public virtual AllyLookup AllyLookup { get; set; }
         public virtual Ancestry Ancestry { get; set; }
         public virtual FollowerType FollowerType { get; set; }

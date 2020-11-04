@@ -22,12 +22,35 @@ namespace BonemotherGames.Controllers
         {
             Retainer retainer = new Retainer();
             retainer.RetainerClass = retainer.GetRandomRetainerClass();
-            retainer.Ancestry = retainer.GetRandomAncestry();
-            retainer.Name = retainer.GetRandomName();
-            retainer.PrimaryAbilities = retainer.GetPrimaryAbilities(retainer.RetainerClass);
-            retainer.Saves = retainer.GetSaves(retainer.RetainerClass);
-            retainer.Skills = retainer.GetSkills(retainer.RetainerClass);
-            retainer.Actions = retainer.GetActions(retainer.RetainerClass);
+            retainer.ConstructRetainer(retainer);
+
+            return JsonSerializer.Serialize(retainer);
+        }
+
+        //[HttpGet]
+        //public string Get()
+        //{
+        //    List<Retainer> retainers = new List<Retainer>();
+        //    using (var ctx = new BonemotherGamesContext())
+        //    {
+        //        var retainerClasses = ctx.RetainerClass.ToList();
+        //        foreach (var retainerClass in retainerClasses)
+        //        {
+        //            var retainer = new Retainer();
+        //            retainer.ConstructRetainer(retainer, retainerClass.RetainerClassId);
+        //            retainers.Add(retainer);
+        //        }
+        //    }
+
+        //    return JsonSerializer.Serialize(retainers);
+        //}
+
+        [HttpGet("{retainerClassId}")]
+        public string Get(int retainerClassId)
+        {
+            Retainer retainer = new Retainer();
+            retainer.RetainerClass = retainer.GetRetainerClass(retainerClassId);
+            retainer.ConstructRetainer(retainer);
 
             return JsonSerializer.Serialize(retainer);
         }

@@ -17,7 +17,7 @@
         <div>
             <span class="detail-label">Signature Attack: </span>
             <span>
-                <span class="action-name">{{ retainerData.Actions[0].ActionName }}:</span> {{ retainerData.Actions[0].ActionDescription }}
+                <span class="action-name">{{ retainerData.Actions[0].ActionName }}</span><span v-if="retainerData.Actions[0].ActionDescription != null">: {{ retainerData.Actions[0].ActionDescription }}</span>
             </span>
         </div>
         <h4>Special Actions</h4>
@@ -25,20 +25,20 @@
             <span class="detail-label">
                 3rd-Level ({{ retainerData.Actions[1].UsesPerDay }}/day<span v-if="retainerData.Actions[1].ActionTypeName.toLowerCase() != 'action'">, {{ retainerData.Actions[1].ActionTypeName }}</span>): </span>
             <span>
-                <span class="action-name">{{ retainerData.Actions[1].ActionName }}.</span> {{ retainerData.Actions[1].ActionDescription }}
-            </span>
+                <span class="action-name">{{ retainerData.Actions[1].ActionName }}</span><span v-if="retainerData.Actions[1].ActionDescription != null">. {{ retainerData.Actions[1].ActionDescription }}</span>
+</span>
         </div>
         <div>
             <span class="detail-label">5th-Level ({{ retainerData.Actions[2].UsesPerDay }}/day<span v-if="retainerData.Actions[2].ActionTypeName.toLowerCase() != 'action'">, {{ retainerData.Actions[2].ActionTypeName }}</span>): </span>
             <span>
-                <span class="action-name">{{ retainerData.Actions[2].ActionName }}.</span> {{ retainerData.Actions[2].ActionDescription }}
-            </span>
+                <span class="action-name">{{ retainerData.Actions[2].ActionName }}</span><span v-if="retainerData.Actions[2].ActionDescription != null">. {{ retainerData.Actions[2].ActionDescription }}</span>
+</span>
         </div>
         <div>
             <span class="detail-label">7th-Level ({{ retainerData.Actions[3].UsesPerDay }}/day<span v-if="retainerData.Actions[3].ActionTypeName.toLowerCase() != 'action'">, {{ retainerData.Actions[3].ActionTypeName }}</span>): </span>
             <span>
-                <span class="action-name">{{ retainerData.Actions[3].ActionName }}.</span> {{ retainerData.Actions[3].ActionDescription }}
-            </span>
+                <span class="action-name">{{ retainerData.Actions[3].ActionName }}</span><span v-if="retainerData.Actions[3].ActionDescription != null">. {{ retainerData.Actions[3].ActionDescription }}</span>
+</span>
         </div>
     </div>
 </template>

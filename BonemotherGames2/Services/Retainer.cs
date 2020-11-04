@@ -36,6 +36,26 @@ namespace BonemotherGames.Services
             Actions = actions;
         }
 
+        public Retainer ConstructRetainer(Retainer retainer)
+        {
+            retainer.Ancestry = retainer.GetRandomAncestry();
+            retainer.Name = retainer.GetRandomName();
+            retainer.PrimaryAbilities = retainer.GetPrimaryAbilities(retainer.RetainerClass.RetainerClassId);
+            retainer.Saves = retainer.GetSaves(retainer.RetainerClass.RetainerClassId);
+            retainer.Skills = retainer.GetSkills(retainer.RetainerClass.RetainerClassId);
+            retainer.Actions = retainer.GetActions(retainer.RetainerClass.RetainerClassId);
+
+            return retainer;
+        }
+        public RetainerClass GetRetainerClass(int retainerClassId)
+        {
+            using (var ctx = new BonemotherGamesContext())
+            {
+                var retainerClass = ctx.RetainerClass.Where(x => x.RetainerClassId == retainerClassId).First();
+                return retainerClass;
+            }
+        }
+
         public RetainerClass GetRandomRetainerClass()
         {
             using (var ctx = new BonemotherGamesContext())
@@ -52,8 +72,8 @@ namespace BonemotherGames.Services
             using (var ctx = new BonemotherGamesContext())
             {
                 var rand = new Random();
-                var ancestries = ctx.Ancestry.ToList();
-                var randomAncestry = ancestries[rand.Next(ancestries.Count)];
+                var playableAncestries = ctx.Ancestry.Where(x => x.PlayableRace == true).ToList();
+                var randomAncestry = playableAncestries[rand.Next(playableAncestries.Count)];
                 return randomAncestry;
             }
         }
@@ -68,12 +88,12 @@ namespace BonemotherGames.Services
             }
         }
 
-        public List<Ability> GetPrimaryAbilities(RetainerClass retainerClass)
+        public List<Ability> GetPrimaryAbilities(int retainerClassId)
         {
             using (var ctx = new BonemotherGamesContext())
             {
                 var primaryAbilities = new List<Ability>();
-                var retainerClassAbilities = ctx.RetainerClassAbility.Where(x => x.RetainerClassId == retainerClass.RetainerClassId).ToList();
+                var retainerClassAbilities = ctx.RetainerClassAbility.Where(x => x.RetainerClassId == retainerClassId).ToList();
                 foreach (var retainerClassAbility in retainerClassAbilities)
                 {
                     var primaryAbility = ctx.Ability.Where(x => x.AbilityId == retainerClassAbility.AbilityId).First();
@@ -83,12 +103,12 @@ namespace BonemotherGames.Services
             }
         }
 
-        public List<Ability> GetSaves(RetainerClass retainerClass)
+        public List<Ability> GetSaves(int retainerClassId)
         {
             using (var ctx = new BonemotherGamesContext())
             {
                 var saves = new List<Ability>();
-                var retainerClassSaves = ctx.RetainerClassSave.Where(x => x.RetainerClassId == retainerClass.RetainerClassId).ToList();
+                var retainerClassSaves = ctx.RetainerClassSave.Where(x => x.RetainerClassId == retainerClassId).ToList();
                 foreach (var retainerClassSave in retainerClassSaves)
                 {
                     var save = ctx.Ability.Where(x => x.AbilityId == retainerClassSave.AbilityId).First();
@@ -98,12 +118,12 @@ namespace BonemotherGames.Services
             }
         }
 
-        public List<Skill> GetSkills(RetainerClass retainerClass)
+        public List<Skill> GetSkills(int retainerClassId)
         {
             using (var ctx = new BonemotherGamesContext())
             {
                 var skills = new List<Skill>();
-                var retainerClassSkills = ctx.RetainerClassSkill.Where(x => x.RetainerClassId == retainerClass.RetainerClassId).ToList();
+                var retainerClassSkills = ctx.RetainerClassSkill.Where(x => x.RetainerClassId == retainerClassId).ToList();
                 foreach (var retainerClassSkill in retainerClassSkills)
                 {
                     var skill = ctx.Skill.Where(x => x.SkillId == retainerClassSkill.SkillId).First();
@@ -113,13 +133,13 @@ namespace BonemotherGames.Services
             }
         }
 
-        public List<SpecialAction> GetActions(RetainerClass retainerClass)
+        public List<SpecialAction> GetActions(int retainerClassId)
         {
             using (var ctx = new BonemotherGamesContext())
             {
                 var actions = new List<SpecialAction>();
                 var retainerActions = new List<RetainerAction>();
-                var retainerClassActions = ctx.RetainerClassRetainerAction.Where(x => x.RetainerClassId == retainerClass.RetainerClassId).ToList();
+                var retainerClassActions = ctx.RetainerClassRetainerAction.Where(x => x.RetainerClassId == retainerClassId).ToList();
                 foreach (var rca in retainerClassActions)
                 {
                     var actionId = rca.ActionId;

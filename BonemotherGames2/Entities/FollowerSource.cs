@@ -7,6 +7,6 @@ namespace BonemotherGames2.Entities
     {
         public int LeaderClassId { get; set; }
         public string LeaderClassName { get; set; }
-        public bool? PlayableClass { get; set; }
+        public bool PlayableClass { get; set; }
     }
 }

@@ -21,9 +21,10 @@ namespace BonemotherGames2.Entities
         public int Defense { get; set; }
         public int Toughness { get; set; }
         public int Morale { get; set; }
-        public bool? PlayableRace { get; set; }
-        public bool? AllowRetainer { get; set; }
-        public bool? AllowUnit { get; set; }
+        public bool PlayableRace { get; set; }
+        public bool AllowRetainer { get; set; }
+        public bool AllowUnit { get; set; }
+        public bool SubancestryRequired { get; set; }
 
         public virtual CreatureSize CreatureSize { get; set; }
         public virtual ICollection<FollowerChart> FollowerChart { get; set; }

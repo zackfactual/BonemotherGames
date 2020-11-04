@@ -83,21 +83,9 @@ namespace BonemotherGames2.Entities
 
             modelBuilder.Entity<Ancestry>(entity =>
             {
-                entity.Property(e => e.AllowRetainer)
-                    .IsRequired()
-                    .HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.AllowUnit)
-                    .IsRequired()
-                    .HasDefaultValueSql("((1))");
-
                 entity.Property(e => e.AncestryName)
                     .IsRequired()
                     .HasMaxLength(64);
-
-                entity.Property(e => e.PlayableRace)
-                    .IsRequired()
-                    .HasDefaultValueSql("((1))");
 
                 entity.HasOne(d => d.CreatureSize)
                     .WithMany(p => p.Ancestry)
@@ -241,10 +229,6 @@ namespace BonemotherGames2.Entities
                 entity.Property(e => e.LeaderClassName)
                     .IsRequired()
                     .HasMaxLength(32);
-
-                entity.Property(e => e.PlayableClass)
-                    .IsRequired()
-                    .HasDefaultValueSql("((1))");
             });
 
             modelBuilder.Entity<FollowerSourceFollowerChart>(entity =>

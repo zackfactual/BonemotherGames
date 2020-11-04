@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BonemotherGames2.Services
 {
-    public class SpecialAction : ISpecialAction
+    public class SpecialAction
     {
         public int ActionId { get; set; }
         public int LevelAttained { get; set; }

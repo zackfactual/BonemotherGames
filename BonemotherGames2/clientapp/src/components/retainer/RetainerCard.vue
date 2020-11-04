@@ -1,7 +1,7 @@
 ﻿<template>
     <div class="retainer-card">
-        <h2>{{ retainerData.Name.NameText }}</h2>
-        <h3>{{ retainerData.Ancestry.AncestryName }} {{ retainerData.RetainerClass.ClassName }}</h3>
+        <h2>{{ retainerData.Name }}</h2>
+        <h3>{{ retainerData.Ancestry.AncestryName }}<span v-if="retainerData.Subancestry != null">, {{ retainerData.Subancestry.SubancestryName }}</span> | {{ retainerData.RetainerClass.ClassName }}</h3>
         <div>
             <span class="detail-label">Primary Ability: </span>
             <span>{{ formatAbilities(retainerData.PrimaryAbilities) }}</span>

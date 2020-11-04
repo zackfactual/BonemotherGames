@@ -9,13 +9,18 @@ namespace BonemotherGames2.Services
 {
     public static class CharacterName
     {
-        // todo: pass potentially null subancestryId
-        public static string GetRandomAncestralName(int ancestryId)
+        public static string GetRandomAncestralName(int ancestryId, int? subancestryId)
         {
             using (var ctx = new BonemotherGamesContext())
             {
                 var rand = new Random();
-                var ancestralNames = ctx.NameAncestry.Where(x => x.AncestryId == ancestryId).ToList();
+                List<NameAncestry> ancestralNames = new List<NameAncestry>();
+                ancestralNames = subancestryId != null ? ctx.NameAncestry.Where(x => x.AncestryId == ancestryId && x.SubancestryId == subancestryId).ToList() :
+                    ancestralNames = ctx.NameAncestry.Where(x => x.AncestryId == ancestryId).ToList();
+                if (ancestralNames.Count == 0)
+                {
+                    ancestralNames = ctx.NameAncestry.Where(x => x.AncestryId == ancestryId).ToList();
+                }
 
                 List<string> ancestralFirstNames = new List<string>();
                 List<string> ancestralNicknames = new List<string>();
@@ -48,11 +53,29 @@ namespace BonemotherGames2.Services
 
                 StringBuilder sb = new StringBuilder();
                 if (firstName != null)
+                {
                     sb.Append(firstName + ' ');
+                }
+                    
                 if (nickname != null)
-                    sb.Append(nickname + ' ');
+                {
+                    if (ancestryId == 7 || ancestryId == 42)
+                    {
+                        sb.Append('"');
+                        sb.Append(nickname);
+                        sb.Append('"');
+                        sb.Append(' ');
+                    }
+                    else
+                    {
+                        sb.Append(nickname + ' ');
+                    }   
+                }
+                    
                 if (surname != null)
+                {
                     sb.Append(surname);
+                }
                 var name = sb.ToString().Trim();
                 return name;
             }

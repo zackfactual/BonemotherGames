@@ -45,7 +45,8 @@ namespace BonemotherGames.Services
         {
             retainer.Ancestry = retainer.GetRandomAncestry();
             retainer.Subancestry = retainer.Ancestry.SubancestryRequired ? GetRandomSubancestry(retainer.Ancestry.AncestryId) : null;
-            retainer.Name = retainer.Subancestry == null ? CharacterName.GetRandomAncestralName(retainer.Ancestry.AncestryId) : CharacterName.GetRandomAncestralName(retainer.Ancestry.AncestryId);
+            retainer.Name = retainer.Subancestry == null ? CharacterName.GetRandomAncestralName(retainer.Ancestry.AncestryId, null) : 
+                CharacterName.GetRandomAncestralName(retainer.Ancestry.AncestryId, retainer.Subancestry.SubancestryId);
             retainer.PrimaryAbilities = retainer.GetPrimaryAbilities(retainer.RetainerClass.RetainerClassId);
             retainer.Saves = retainer.GetSaves(retainer.RetainerClass.RetainerClassId);
             retainer.Skills = retainer.GetSkills(retainer.RetainerClass.RetainerClassId);

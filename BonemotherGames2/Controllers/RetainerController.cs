@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json;
 using BonemotherGames.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,7 +18,7 @@ namespace BonemotherGames.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Retainer> Get()
+        public string Get()
         {
             List<Retainer> retainers = new List<Retainer>();
 
@@ -33,7 +34,7 @@ namespace BonemotherGames.Controllers
 
             retainers.Add(retainer1);
             retainers.Add(retainer2);
-            return retainers;
+            return JsonSerializer.Serialize(retainers);
         }
     }
 }

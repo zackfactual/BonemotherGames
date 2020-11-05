@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace BonemotherGames2.Entities
 {
@@ -57,7 +55,7 @@ namespace BonemotherGames2.Entities
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=localhost\\SQLExpress;Database=BonemotherGames;Trusted_Connection=True;MultipleActiveResultSets=True");
+                optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=BonemotherGames;Trusted_Connection=True;MultipleActiveResultSets=True");
             }
         }
 
@@ -161,11 +159,6 @@ namespace BonemotherGames2.Entities
 
             modelBuilder.Entity<ArtisanLookup>(entity =>
             {
-                entity.HasKey(e => e.ArtisanLookup1)
-                    .HasName("PK__ArtisanL__B1EBC2B91B651C5D");
-
-                entity.Property(e => e.ArtisanLookup1).HasColumnName("ArtisanLookup");
-
                 entity.Property(e => e.Benefit).IsRequired();
 
                 entity.Property(e => e.Shop)

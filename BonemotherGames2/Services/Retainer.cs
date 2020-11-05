@@ -3,7 +3,6 @@ using BonemotherGames2.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace BonemotherGames.Services
 {
@@ -27,7 +26,7 @@ namespace BonemotherGames.Services
 
         public Retainer ConstructRetainer(Retainer retainer)
         {
-            retainer.Ancestry = AncestryGenerator.GetRandomAncestry();
+            retainer.Ancestry = AncestryGenerator.GetRandomAncestry(true, false);
             if (retainer.Ancestry.SubancestryRequired)
             {
                 retainer.Subancestry = AncestryGenerator.GetRandomSubancestry(retainer.Ancestry.AncestryId);

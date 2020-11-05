@@ -6,14 +6,14 @@ namespace BonemotherGames2.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class MilitaryUnitController : ControllerBase
+    public class ArtisanController : ControllerBase
     {
         [HttpGet]
         public string Get()
         {
-            MilitaryUnit unit = new MilitaryUnit();
-            unit.ConstructRandomUnit(unit);
-            return JsonSerializer.Serialize(unit);
-        }
+            Artisan artisan = new Artisan();
+            artisan.ConstructRandomArtisan(artisan);
+            return JsonSerializer.Serialize(artisan);
+        }  
     }
 }

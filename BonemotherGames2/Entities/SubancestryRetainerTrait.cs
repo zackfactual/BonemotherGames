@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BonemotherGames2.Entities
+﻿namespace BonemotherGames2.Entities
 {
     public partial class SubancestryRetainerTrait
     {

@@ -9,13 +9,6 @@ namespace BonemotherGames.Controllers
     [Route("[controller]")]
     public class RetainerController : ControllerBase
     {
-        private readonly ILogger<RetainerController> _logger;
-
-        public RetainerController(ILogger<RetainerController> logger)
-        {
-            _logger = logger;
-        }
-
         [HttpGet]
         public string Get()
         {

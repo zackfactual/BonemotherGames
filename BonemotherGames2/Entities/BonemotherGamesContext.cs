@@ -18,6 +18,7 @@ namespace BonemotherGames2.Entities
         public virtual DbSet<Ability> Ability { get; set; }
         public virtual DbSet<ActionType> ActionType { get; set; }
         public virtual DbSet<AllyLookup> AllyLookup { get; set; }
+        public virtual DbSet<AmbassadorLookup> AmbassadorLookup { get; set; }
         public virtual DbSet<Ancestry> Ancestry { get; set; }
         public virtual DbSet<AncestryLanguage> AncestryLanguage { get; set; }
         public virtual DbSet<AncestryRetainerTrait> AncestryRetainerTrait { get; set; }

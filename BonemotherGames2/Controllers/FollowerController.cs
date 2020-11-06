@@ -14,18 +14,11 @@ namespace BonemotherGames2.Controllers
         [HttpGet]
         public string Get()
         {
-            List<Follower> followers = new List<Follower>();
             using (var ctx = new BonemotherGamesContext())
             {
-                var followerCharts = ctx.FollowerChart.ToList();
-                foreach (var followerChart in followerCharts)
-                {
-                    var follower = new Follower();
-                    follower.ConstructFollowerFromFollowerChart(follower, followerChart);
-                    followers.Add(follower);
-                }
+                var followerSources = ctx.FollowerSource.ToList();
+                return JsonSerializer.Serialize(followerSources);
             }
-            return JsonSerializer.Serialize(followers);
         }
 
 

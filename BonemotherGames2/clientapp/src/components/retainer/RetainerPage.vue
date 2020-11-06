@@ -29,9 +29,7 @@ export default {
 
 <style lang="scss">
 .retainer-page {
-    margin: 0 64px;
-    padding: 32px;
-    background-color: #C1CCD7;
+    width: 100%;
     display: grid;
     grid-template-columns: repeat(12, 1fr);
 }

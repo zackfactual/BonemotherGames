@@ -1,17 +1,12 @@
 <template>
   <div id="app">
-    <retainer-page />
+      <router-view></router-view>
   </div>
 </template>
 
 <script>
-    import RetainerPage from './components/retainer/RetainerPage.vue'
-
 export default {
-  name: 'app',
-  components: {
-      RetainerPage
-  }
+  name: 'app'
 }
 </script>
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using BonemotherGames2.Entities;
@@ -14,22 +15,37 @@ namespace BonemotherGames2.Controllers
         [HttpGet]
         public string Get()
         {
-            List<Ally> allies = new List<Ally>();
             using (var ctx = new BonemotherGamesContext())
             {
-                var allyLookups = ctx.AllyLookup.ToList();
-                foreach (var allyLookup in allyLookups)
-                {
-                    var ally = new Ally()
-                    {
-                        Name = allyLookup.AllyLookupName,
-                        IsUnit = allyLookup.IsUnit
-                    };
-                    allies.Add(ally);
-                }
+                var ally = new Ally();
+                var rand = new Random();
+                var allies = ctx.AllyLookup.ToList();
+                var randomAlly = allies[rand.Next(allies.Count)];
+                ally.Name = randomAlly.AllyLookupName;
+                ally.IsUnit = randomAlly.IsUnit;
+                return JsonSerializer.Serialize(ally);
             }
-            return JsonSerializer.Serialize(allies);
         }
+
+        //[HttpGet]
+        //public string Get()
+        //{
+        //    List<Ally> allies = new List<Ally>();
+        //    using (var ctx = new BonemotherGamesContext())
+        //    {
+        //        var allyLookups = ctx.AllyLookup.ToList();
+        //        foreach (var allyLookup in allyLookups)
+        //        {
+        //            var ally = new Ally()
+        //            {
+        //                Name = allyLookup.AllyLookupName,
+        //                IsUnit = allyLookup.IsUnit
+        //            };
+        //            allies.Add(ally);
+        //        }
+        //    }
+        //    return JsonSerializer.Serialize(allies);
+        //}
 
         [HttpGet("{allyLookupId}")]
         public string Get(int allyLookupId)

@@ -22,7 +22,7 @@ namespace BonemotherGames2.Services
             }
             artisan.Ancestry = AncestryGenerator.GetRandomAncestry(true, false);
             artisan.Name = CharacterNameGenerator.GetRandomAncestralName(artisan.Ancestry.AncestryId, null);
-            artisan.ShopLevel = 0;
+            artisan.ShopLevel = 1;
             return artisan;
         }
     }

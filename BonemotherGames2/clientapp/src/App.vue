@@ -19,7 +19,5 @@ export default {
     margin: 0 64px;
     padding: 32px;
     background-color: #C1CCD7;
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
 }
 </style>

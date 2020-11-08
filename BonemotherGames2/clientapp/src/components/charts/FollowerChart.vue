@@ -6,7 +6,7 @@
         </tr>
         <tr v-for="chartRow in chartData">
             <td>{{ chartRow.LowRoll }}<span v-if="chartRow.LowRoll != chartRow.HighRoll">-{{ chartRow.HighRoll }}</span></td>
-            <td>{{ chartRow.FollowerChart.FollowerName }}</td>
+            <td><a :href="chartLinkUrl(chartRow)">{{ chartRow.FollowerChart.FollowerName }}</a></td>
         </tr>
     </table>
 </template>
@@ -19,8 +19,13 @@ export default {
             required: true
         }
     },
-    mounted () {
-        console.log(this.chartData)
+    methods: {
+        chartLinkUrl (row) {
+            if (row.FollowerChart.FollowerTypeId === 2) {
+                return `/retainer_card/${row.FollowerChart.RetainerClassId}`
+            }
+            return '/'
+        }
     }
 }
 </script>

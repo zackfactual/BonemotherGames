@@ -27,6 +27,18 @@ export default {
             if (row.FollowerChart.FollowerTypeId === 3) {
                 return `/artisan_card/${row.FollowerChart.ArtisanId}`
             }
+            if (row.FollowerChart.FollowerTypeId === 4) {
+                return `/ambassador_card/${row.FollowerChart.AmbassadorLookupId}`
+            }
+            if (row.FollowerChart.FollowerTypeId === 12) {
+                return `/mount_card/${row.FollowerChart.PaladinMountLookupId}`
+            }
+            if (row.FollowerChart.FollowerTypeId === 10 ||
+                row.FollowerChart.FollowerTypeId === 11 ||
+                row.FollowerChart.FollowerTypeId === 13 ||
+                row.FollowerChart.FollowerTypeId === 14) {
+                return `/ally_card/${row.FollowerChart.AllyLookupId}`
+            }
             return '/'
         }
     }

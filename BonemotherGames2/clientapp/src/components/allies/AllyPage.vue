@@ -19,7 +19,11 @@ export default {
         }
     },
     beforeCreate () {
-        axios.get('Ally')
+        let allyRoute = '/Ally'
+        if (this.$route.params.ally_id) {
+            allyRoute = allyRoute.concat(`/${this.$route.params.ally_id}`)
+        }
+        axios.get(allyRoute)
             .then(result => {
                 this.randomAlly = result.data
             })

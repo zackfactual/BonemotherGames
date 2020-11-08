@@ -18,8 +18,12 @@ export default {
             randomMount: null
         }
     },
-    beforeCreate () {
-        axios.get('PaladinMount')
+    beforeCreate() {
+        let mountRoute = '/PaladinMount'
+        if (this.$route.params.mount_id) {
+            mountRoute = mountRoute.concat(`/${this.$route.params.mount_id}`)
+        }
+        axios.get(mountRoute)
             .then(result => {
                 this.randomMount = result.data
             })

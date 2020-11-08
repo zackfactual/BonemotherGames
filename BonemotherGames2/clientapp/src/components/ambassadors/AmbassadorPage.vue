@@ -18,8 +18,12 @@ export default {
             randomAmbassador: null
         }
     },
-    beforeCreate () {
-        axios.get('Ambassador')
+    beforeCreate() {
+        let ambassadorRoute = '/Ambassador'
+        if (this.$route.params.ambassador_id) {
+            ambassadorRoute = ambassadorRoute.concat(`/${this.$route.params.ambassador_id}`)
+        }
+        axios.get(ambassadorRoute)
             .then(result => {
                 this.randomAmbassador = result.data
             })

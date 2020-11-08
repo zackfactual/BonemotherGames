@@ -19,7 +19,11 @@ export default {
         }
     },
     beforeCreate () {
-        axios.get('Retainer')
+        let retainerRoute = '/Retainer'
+        if (this.$route.params.retainer_class_id) {
+            retainerRoute = retainerRoute.concat(`/${this.$route.params.retainer_class_id}`)
+        }
+        axios.get(retainerRoute)
             .then(result => {
                 this.randomRetainer = result.data
             })

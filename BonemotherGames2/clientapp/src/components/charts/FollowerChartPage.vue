@@ -1,6 +1,6 @@
 ﻿<template>
-    <div>
-        <select class="form-control" v-model="selectedLeaderClassId">
+    <div class="follower-chart-page">
+        <select class="leader-class-select" v-model="selectedLeaderClassId">
             <option disabled :value="null">Leader Class</option>
             <option v-for="leaderClass in leaderClasses" :value="leaderClass.LeaderClassId">{{ leaderClass.LeaderClassName }}</option>
         </select>
@@ -43,8 +43,12 @@ export default {
 </script>
 
 <style lang="scss">
-    .form-control {
+    .follower-chart-page {
+        grid-template-columns: repeat(12, 1fr);
+    }
+
+    .leader-class-select {
         display: block;
-        width: 100%;
+        grid-column: 1 / span 2;
     }
 </style>

@@ -18,6 +18,29 @@ export default {
             type: Array,
             required: true
         }
+    },
+    mounted () {
+        console.log(this.chartData)
     }
 }
 </script>
+
+<style lang="scss">
+.follower-chart {
+    background-color: white;
+    border: 2px solid #2D2F39;
+}
+
+th {
+    background-color: #FFF8EB;
+}
+
+td:not(:last-child), th:not(:last-child) {
+    border-right: 1px solid #2D2F39;
+    padding: 4px;
+}
+
+tr:not(:last-child) {
+    border-bottom: 1px solid #2D2F39;
+}
+</style>

@@ -23,6 +23,7 @@ const routes = [
     { path: '/artisan_card', component: ArtisanPage },
     { path: '/mount_card', component: MountPage },
     { path: '/retainer_card', component: RetainerPage },
+    { path: '/retainer_card/:retainer_class_id', component: RetainerPage },
     { path: '/unit_card', component: UnitPage },
     { path: '/follower_chart', component: FollowerChartPage }
 ]

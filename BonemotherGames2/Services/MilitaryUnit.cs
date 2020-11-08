@@ -7,12 +7,12 @@ namespace BonemotherGames2.Services
 {
     public class MilitaryUnit
     {
-        public Ancestry Ancestry { get; set; }
-        public UnitExperience Experience { get; set; }
-        public UnitEquipment Equipment { get; set; }
-        public UnitSize Size { get; set; }
+        public string AncestryName { get; set; }
+        public string UnitExperienceName { get; set; }
+        public string UnitEquipmentName { get; set; }
+        public string UnitSizeName { get; set; }
         public List<UnitTrait> Traits { get; set; }
-        public UnitType UnitType { get; set; }
+        public string UnitTypeName { get; set; }
         public int Attack { get; set; }
         public int Power { get; set; }
         public int Defense { get; set; }
@@ -25,21 +25,34 @@ namespace BonemotherGames2.Services
 
         }
 
-        internal MilitaryUnit ConstructRandomUnit(MilitaryUnit unit)
+        internal MilitaryUnit BuildUnit(int rollableUnitId)
         {
-            unit.Ancestry = AncestryGenerator.GetRandomAncestry(false, true);
-            unit.Traits = GetAncestralUnitTraits(unit.Ancestry.AncestryId);
-            unit.Experience = GetRandomExperience();
-            unit.Equipment = GetRandomEquipment();
-            unit.Size = GetRandomSize();
-            unit.UnitType = GetRandomUnitType();
-            unit.Attack = unit.Ancestry.Attack + unit.Experience.Attack + unit.UnitType.Attack;
-            unit.Power = unit.Ancestry.Power + unit.Equipment.Power + unit.UnitType.Power;
-            unit.Defense = unit.Ancestry.Defense + unit.Equipment.Defense + unit.UnitType.Defense;
-            unit.Toughness = unit.Ancestry.Toughness + unit.Experience.Toughness + unit.UnitType.Toughness;
-            unit.Morale = unit.Ancestry.Morale + unit.Experience.Morale + unit.UnitType.Morale;
-            unit.Cost = CalculateUnitCost(unit);
-            return unit;
+            using (var ctx = new BonemotherGamesContext())
+            {
+                var militaryUnit = new MilitaryUnit();
+                var ancestry = AncestryGenerator.GetRandomAncestry(false, true);
+                militaryUnit.AncestryName = ancestry.AncestryName;
+                militaryUnit.Traits = GetAncestralUnitTraits(ancestry.AncestryId);
+
+                var rollableUnit = ctx.RollableUnit.Where(x => x.RollableUnitId == rollableUnitId).First();
+                var experience = ctx.UnitExperience.Where(x => x.UnitExperienceId == rollableUnit.UnitExperienceId).First();
+                var equipment = ctx.UnitEquipment.Where(x => x.UnitEquipmentId == rollableUnit.UnitEquipmentId).First();
+                var size = ctx.UnitSize.Where(x => x.UnitSizeId == rollableUnit.UnitSizeId).First();
+                var unitType = ctx.UnitType.Where(x => x.UnitTypeId == rollableUnit.UnitTypeId).First();
+
+                militaryUnit.UnitExperienceName = experience.UnitExperienceName;
+                militaryUnit.UnitEquipmentName = equipment.UnitEquipmentName;
+                militaryUnit.UnitSizeName = size.UnitSizeName;
+                militaryUnit.UnitTypeName = unitType.UnitTypeName;
+
+                militaryUnit.Attack = ancestry.Attack + experience.Attack + unitType.Attack;
+                militaryUnit.Power = ancestry.Power + equipment.Power + unitType.Power;
+                militaryUnit.Defense = ancestry.Defense + equipment.Defense + unitType.Defense;
+                militaryUnit.Toughness = ancestry.Toughness + experience.Toughness + unitType.Toughness;
+                militaryUnit.Morale = ancestry.Morale + experience.Morale + unitType.Morale;
+                militaryUnit.Cost = CalculateUnitCost(militaryUnit, unitType.CostModifier, size.CostModifier);
+                return militaryUnit;
+            }
         }
 
         private List<UnitTrait> GetAncestralUnitTraits(int ancestryId)
@@ -101,14 +114,14 @@ namespace BonemotherGames2.Services
             }
         }
 
-        private double CalculateUnitCost(MilitaryUnit unit)
+        private double CalculateUnitCost(MilitaryUnit unit, double unitTypeCostModifier, double unitSizeCostModifier)
         {
             var traitCost = 0;
             foreach (var trait in unit.Traits)
             {
                 traitCost += trait.Cost;
             }
-            double cost = (unit.UnitType.CostModifier * (unit.Attack + unit.Power + unit.Defense + unit.Toughness + (unit.Morale * 2)) * unit.Size.CostModifier * 10) + traitCost + 30;
+            double cost = (unitTypeCostModifier * (unit.Attack + unit.Power + unit.Defense + unit.Toughness + (unit.Morale * 2)) * unitSizeCostModifier * 10) + traitCost + 30;
             return cost;
         }
     }

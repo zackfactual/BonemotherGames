@@ -12,21 +12,6 @@ namespace BonemotherGames2.Services
         public ArtisanLookup ArtisanLookup { get; set; }
         public int ShopLevel { get; set; }
 
-        internal Artisan ConstructRandomArtisan(Artisan artisan)
-        {
-            using (var ctx = new BonemotherGamesContext())
-            {
-                var rand = new Random();
-                var artisanLookups = ctx.ArtisanLookup.ToList();
-                var randomArtisanLookup = artisanLookups[rand.Next(artisanLookups.Count)];
-                artisan.ArtisanLookup = randomArtisanLookup;
-            }
-            artisan.Ancestry = AncestryGenerator.GetRandomAncestry(true, false);
-            artisan.Name = CharacterNameGenerator.GetRandomAncestralName(artisan.Ancestry.AncestryId, null);
-            artisan.ShopLevel = 1;
-            return artisan;
-        }
-
         internal Artisan ConstructArtisan(int artisanLookupId)
         {
             using (var ctx = new BonemotherGamesContext())

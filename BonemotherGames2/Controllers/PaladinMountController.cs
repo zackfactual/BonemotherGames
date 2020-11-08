@@ -14,39 +14,6 @@ namespace BonemotherGames2.Controllers
     [ApiController]
     public class PaladinMountController : ControllerBase
     {
-        [HttpGet]
-        public string Get()
-        {
-            PaladinMount paladinMount = new PaladinMount();
-            using (var ctx = new BonemotherGamesContext())
-            {
-                var rand = new Random();
-                var paladinMountLookup = ctx.PaladinMountLookup.ToList();
-                var randomMount = paladinMountLookup[rand.Next(paladinMountLookup.Count)];
-                paladinMount.MountType = randomMount.PaladinMountName;
-            }
-            return JsonSerializer.Serialize(paladinMount);
-        }
-
-        //[HttpGet]
-        //public string Get()
-        //{
-        //    List<PaladinMount> paladinMounts = new List<PaladinMount>();
-        //    using (var ctx = new BonemotherGamesContext())
-        //    {
-        //        var paladinMountLookups = ctx.PaladinMountLookup.ToList();
-        //        foreach (var paladinMountLookup in paladinMountLookups)
-        //        {
-        //            var paladinMount = new PaladinMount()
-        //            {
-        //                MountType = paladinMountLookup.PaladinMountName
-        //            };
-        //            paladinMounts.Add(paladinMount);
-        //        }
-        //    }
-        //    return JsonSerializer.Serialize(paladinMounts);
-        //}
-
         [HttpGet("{paladinMountLookupId}")]
         public string Get(int paladinMountLookupId)
         {

@@ -9,34 +9,6 @@ namespace BonemotherGames.Controllers
     [Route("[controller]")]
     public class RetainerController : ControllerBase
     {
-        [HttpGet]
-        public string Get()
-        {
-            Retainer retainer = new Retainer();
-            retainer.RetainerClass = retainer.GetRandomRetainerClass();
-            retainer.ConstructRetainer(retainer);
-
-            return JsonSerializer.Serialize(retainer);
-        }
-
-        //[HttpGet]
-        //public string Get()
-        //{
-        //    List<Retainer> retainers = new List<Retainer>();
-        //    using (var ctx = new BonemotherGamesContext())
-        //    {
-        //        var retainerClasses = ctx.RetainerClass.ToList();
-        //        foreach (var retainerClass in retainerClasses)
-        //        {
-        //            var retainer = new Retainer();
-        //            retainer.ConstructRetainer(retainer, retainerClass.RetainerClassId);
-        //            retainers.Add(retainer);
-        //        }
-        //    }
-
-        //    return JsonSerializer.Serialize(retainers);
-        //}
-
         [HttpGet("{retainerClassId}")]
         public string Get(int retainerClassId)
         {

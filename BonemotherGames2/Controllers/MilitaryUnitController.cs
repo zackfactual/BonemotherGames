@@ -8,12 +8,12 @@ namespace BonemotherGames2.Controllers
     [ApiController]
     public class MilitaryUnitController : ControllerBase
     {
-        [HttpGet]
-        public string Get()
+        [HttpGet("{rollableUnitId}")]
+        public string Get(int rollableUnitId)
         {
-            MilitaryUnit unit = new MilitaryUnit();
-            unit.ConstructRandomUnit(unit);
-            return JsonSerializer.Serialize(unit);
+            MilitaryUnit militaryUnit = new MilitaryUnit();
+            militaryUnit = militaryUnit.BuildUnit(rollableUnitId);
+            return JsonSerializer.Serialize(militaryUnit);
         }
     }
 }

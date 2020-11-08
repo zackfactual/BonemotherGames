@@ -19,7 +19,11 @@ export default {
         }
     },
     beforeCreate () {
-        axios.get('MilitaryUnit')
+        let unitRoute = '/MilitaryUnit'
+        if (this.$route.params.unit_id) {
+            unitRoute = unitRoute.concat(`/${this.$route.params.unit_id}`)
+        }
+        axios.get(unitRoute)
             .then(result => {
                 this.randomUnit = result.data
             })

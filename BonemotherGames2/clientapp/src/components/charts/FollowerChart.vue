@@ -21,6 +21,9 @@ export default {
     },
     methods: {
         chartLinkUrl (row) {
+            if (row.FollowerChart.FollowerTypeId === 1) {
+                return `/unit_card/${row.FollowerChart.RollableUnitId}`
+            }
             if (row.FollowerChart.FollowerTypeId === 2) {
                 return `/retainer_card/${row.FollowerChart.RetainerClassId}`
             }

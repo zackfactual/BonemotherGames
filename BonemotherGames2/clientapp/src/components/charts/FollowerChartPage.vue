@@ -1,6 +1,6 @@
 ﻿<template>
     <div class="follower-chart-page">
-        <select class="leader-class-select" v-model="selectedLeaderClassId">
+        <select class="leader-class-select" v-model="selectedLeaderClassId" @change="selectLeaderClass">
             <option disabled :value="null">Leader Class</option>
             <option v-for="leaderClass in leaderClasses" :value="leaderClass.LeaderClassId">{{ leaderClass.LeaderClassName }}</option>
         </select>
@@ -30,10 +30,10 @@ export default {
                 this.leaderClasses = result.data    
             })
     },
-    watch: {
-        selectedLeaderClassId () {
+    methods: {
+        selectLeaderClass () {
             console.log(this.selectedLeaderClassId)
-            axios.get(`follower/${this.selectedLeaderClassId}`)
+            axios.get(`/follower/${this.selectedLeaderClassId}`)
                 .then(result => {
                     this.chartData = result.data
                 })

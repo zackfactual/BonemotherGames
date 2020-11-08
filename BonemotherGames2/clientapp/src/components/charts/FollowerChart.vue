@@ -24,6 +24,9 @@ export default {
             if (row.FollowerChart.FollowerTypeId === 2) {
                 return `/retainer_card/${row.FollowerChart.RetainerClassId}`
             }
+            if (row.FollowerChart.FollowerTypeId === 3) {
+                return `/artisan_card/${row.FollowerChart.ArtisanId}`
+            }
             return '/'
         }
     }

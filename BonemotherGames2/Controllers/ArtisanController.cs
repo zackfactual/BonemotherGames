@@ -14,6 +14,15 @@ namespace BonemotherGames2.Controllers
             Artisan artisan = new Artisan();
             artisan.ConstructRandomArtisan(artisan);
             return JsonSerializer.Serialize(artisan);
-        }  
+        }
+
+
+        [HttpGet("{artisanLookupId}")]
+        public string Get(int artisanLookupId)
+        {
+            Artisan artisan = new Artisan();
+            artisan = artisan.ConstructArtisan(artisanLookupId);
+            return JsonSerializer.Serialize(artisan);
+        }
     }
 }

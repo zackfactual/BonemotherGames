@@ -18,8 +18,12 @@ export default {
             randomArtisan: null
         }
     },
-    beforeCreate () {
-        axios.get('Artisan')
+    beforeCreate() {
+        let artisanRoute = '/Artisan'
+        if (this.$route.params.artisan_id) {
+            artisanRoute = artisanRoute.concat(`/${this.$route.params.artisan_id}`)
+        }
+        axios.get(artisanRoute)
             .then(result => {
                 this.randomArtisan = result.data
             })

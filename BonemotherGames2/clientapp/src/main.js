@@ -30,7 +30,8 @@ const routes = [
     { path: '/retainer_card/:retainer_class_id', component: RetainerPage },
     { path: '/unit_card', component: UnitPage },
     { path: '/unit_card/:unit_id', component: UnitPage },
-    { path: '/follower_chart', component: FollowerChartPage }
+    { path: '/follower_chart', component: FollowerChartPage },
+    { path: '/follower_chart/:leader_class_id', component: FollowerChartPage }
 ]
 
 const router = new VueRouter({ mode: 'history', routes: routes })

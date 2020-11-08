@@ -5,7 +5,9 @@
             <option v-for="leaderClass in leaderClasses" :value="leaderClass.LeaderClassId">{{ leaderClass.LeaderClassName }}</option>
         </select>
         <follower-chart v-if="selectedLeaderClassId" v-bind="{ chartData }" />
-    </div>
+        <b-modal id="modal-1" title="BootstrapVue">
+            <p class="my-4">Hello from modal!</p>
+        </b-modal></div>
 </template>
 
 <script>
@@ -24,11 +26,15 @@ export default {
             chartData: []
         }
     },
-    beforeCreate () {
-        axios.get('follower')
+    created() {
+        axios.get('/follower')
             .then(result => {
-                this.leaderClasses = result.data    
+                this.leaderClasses = result.data
             })
+        if (this.$route.params.leader_class_id) {
+            this.selectedLeaderClassId = this.$route.params.leader_class_id
+            this.selectLeaderClass()
+        }
     },
     methods: {
         selectLeaderClass () {

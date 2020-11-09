@@ -11,7 +11,7 @@
                 <option v-for="alignment in availableAlignments" :value="alignment.AlignmentId">{{ alignment.AlignmentName }}</option>
             </select>
         </b-modal>
-        <button @click="rollFollower" v-if="selectedLeaderClassId">Roll 1d<span v-if="chartData.length > 0">{{ chartData[chartData.length - 1].HighRoll }}</span></button>
+        <button @click="rollFollower" v-if="chartData.length > 0">Roll 1d{{ chartData[chartData.length - 1].HighRoll }}</button>
     </div>
 </template>
 

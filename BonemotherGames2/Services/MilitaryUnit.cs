@@ -18,7 +18,7 @@ namespace BonemotherGames2.Services
         public int Defense { get; set; }
         public int Toughness { get; set; }
         public int Morale { get; set; }
-        public double Cost { get; set; }
+        public int Cost { get; set; }
 
         public MilitaryUnit()
         {
@@ -70,51 +70,7 @@ namespace BonemotherGames2.Services
             }
         }
 
-        private UnitType GetRandomUnitType()
-        {
-            var rand = new Random();
-            using (var ctx = new BonemotherGamesContext())
-            {
-                var unitTypes = ctx.UnitType.ToList();
-                var randomUnitType = unitTypes[rand.Next(unitTypes.Count)];
-                return randomUnitType;
-            }
-        }
-
-        private UnitSize GetRandomSize()
-        {
-            var rand = new Random();
-            using (var ctx = new BonemotherGamesContext())
-            {
-                var unitSizes = ctx.UnitSize.ToList();
-                var randomUnitSize = unitSizes[rand.Next(unitSizes.Count)];
-                return randomUnitSize;
-            }
-        }
-
-        private UnitEquipment GetRandomEquipment()
-        {
-            var rand = new Random();
-            using (var ctx = new BonemotherGamesContext())
-            {
-                var unitEquipments = ctx.UnitEquipment.ToList();
-                var randomUnitEquipment = unitEquipments[rand.Next(unitEquipments.Count)];
-                return randomUnitEquipment;
-            }
-        }
-
-        private UnitExperience GetRandomExperience()
-        {
-            var rand = new Random();
-            using (var ctx = new BonemotherGamesContext())
-            {
-                var unitExperiences = ctx.UnitExperience.ToList();
-                var randomUnitExperience = unitExperiences[rand.Next(unitExperiences.Count)];
-                return randomUnitExperience;
-            }
-        }
-
-        private double CalculateUnitCost(MilitaryUnit unit, double unitTypeCostModifier, double unitSizeCostModifier)
+        private int CalculateUnitCost(MilitaryUnit unit, double unitTypeCostModifier, double unitSizeCostModifier)
         {
             var traitCost = 0;
             foreach (var trait in unit.Traits)
@@ -122,7 +78,7 @@ namespace BonemotherGames2.Services
                 traitCost += trait.Cost;
             }
             double cost = (unitTypeCostModifier * (unit.Attack + unit.Power + unit.Defense + unit.Toughness + (unit.Morale * 2)) * unitSizeCostModifier * 10) + traitCost + 30;
-            return cost;
+            return Convert.ToInt32(Math.Round(cost));
         }
     }
 }

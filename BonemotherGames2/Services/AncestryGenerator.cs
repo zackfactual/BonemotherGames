@@ -19,7 +19,7 @@ namespace BonemotherGames2.Services
                 }
                 if (isUnit)
                 {
-                    var unitAncestries = ctx.Ancestry.Where(x => x.AllowUnit == true).ToList();
+                    var unitAncestries = ctx.Ancestry.Where(x => x.AllowUnit == true && x.AncestryId != 21).ToList();
                     randomAncestry = unitAncestries[rand.Next(unitAncestries.Count)];
                 }
                 return randomAncestry;

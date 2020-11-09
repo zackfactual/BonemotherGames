@@ -1,4 +1,7 @@
-﻿namespace BonemotherGames2.Entities
+﻿using System;
+using System.Collections.Generic;
+
+namespace BonemotherGames2.Entities
 {
     public partial class Subancestry
     {

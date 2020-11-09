@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace BonemotherGames2.Entities
 {
@@ -15,6 +17,7 @@ namespace BonemotherGames2.Entities
 
         public virtual DbSet<Ability> Ability { get; set; }
         public virtual DbSet<ActionType> ActionType { get; set; }
+        public virtual DbSet<Alignment> Alignment { get; set; }
         public virtual DbSet<AllyLookup> AllyLookup { get; set; }
         public virtual DbSet<AmbassadorLookup> AmbassadorLookup { get; set; }
         public virtual DbSet<Ancestry> Ancestry { get; set; }
@@ -55,7 +58,7 @@ namespace BonemotherGames2.Entities
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=BonemotherGames;Trusted_Connection=True;MultipleActiveResultSets=True");
+                optionsBuilder.UseSqlServer("Server=localhost\\sqlexpress;Database=BonemotherGames;Trusted_Connection=True;MultipleActiveResultSets=True");
             }
         }
 
@@ -69,6 +72,13 @@ namespace BonemotherGames2.Entities
             modelBuilder.Entity<ActionType>(entity =>
             {
                 entity.Property(e => e.ActionTypeName)
+                    .IsRequired()
+                    .HasMaxLength(16);
+            });
+
+            modelBuilder.Entity<Alignment>(entity =>
+            {
+                entity.Property(e => e.AlignmentName)
                     .IsRequired()
                     .HasMaxLength(16);
             });

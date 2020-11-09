@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import 'bootstrap'
-import 'bootstrap/dist/css/bootstrap.min.css'
+import BootstrapVue from 'bootstrap-vue'
 
 import App from './App.vue'
 
@@ -14,6 +13,7 @@ import MountPage from './components/mounts/MountPage.vue'
 import UnitPage from './components/units/UnitPage.vue'
 
 Vue.config.productionTip = false
+Vue.use(BootstrapVue)
 
 // Routing
 Vue.use(VueRouter);

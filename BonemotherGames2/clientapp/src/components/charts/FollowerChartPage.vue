@@ -4,10 +4,11 @@
             <option disabled :value="null">Leader Class</option>
             <option v-for="leaderClass in leaderClasses" :value="leaderClass.LeaderClassId">{{ leaderClass.LeaderClassName }}</option>
         </select>
-        <follower-chart v-if="selectedLeaderClassId" v-bind="{ chartData }" />
-        <b-modal id="modal-1" title="BootstrapVue">
+        <follower-chart v-if="selectedLeaderClassId" v-bind="{ chartData }" @open-modal="openRedirectModal" />
+        <b-modal id="redirect-modal" title="BootstrapVue">
             <p class="my-4">Hello from modal!</p>
-        </b-modal></div>
+        </b-modal>
+    </div>
 </template>
 
 <script>
@@ -37,8 +38,10 @@ export default {
         }
     },
     methods: {
+        openRedirectModal() {
+            this.$bvModal.show('redirect-modal')
+        },
         selectLeaderClass () {
-            console.log(this.selectedLeaderClassId)
             axios.get(`/follower/${this.selectedLeaderClassId}`)
                 .then(result => {
                     this.chartData = result.data

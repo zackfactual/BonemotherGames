@@ -3,7 +3,7 @@
         <h2>{{ unitData.AncestryName }} Squad</h2>
         <p>{{ unitData.AncestryName }} {{ unitData.UnitExperienceName }} {{ unitData.UnitEquipmentName }} {{ unitData.UnitTypeName }}</p>
 
-        <p>Cost: {{ unitData.Cost}}</p>
+        <p>Cost: {{ unitData.Cost }}</p>
         <table>
             <tr>
                 <td>Attack: </td>

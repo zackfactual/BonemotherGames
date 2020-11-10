@@ -4,14 +4,19 @@
             <option disabled :value="null">Leader Class</option>
             <option v-for="leaderClass in leaderClasses" :value="leaderClass.LeaderClassId">{{ leaderClass.LeaderClassName }}</option>
         </select>
-        <follower-chart v-if="selectedLeaderClassId" v-bind="{ chartData }" @open-modal="openRedirectModal" />
-        <b-modal id="redirect-modal" title="Special Allies!" @ok="confirmRedirectModal">
-            <select class="alignment-select" v-model="selectedAlignmentId">
+        <follower-chart v-if="selectedLeaderClassId" v-bind="{ chartData }" @row-selected="redirectToFollower($event)" />
+        <b-modal id="redirect-modal" title="Your Roll" @ok="confirmRedirectModal">
+            <h3>{{ followerRoll }}: {{ followerRolled ? followerRolled.FollowerName : '' }}</h3>
+
+            <label for="name">Name (optional):</label>
+            <input type="text" id="name" name="name"><br><br>
+
+            <select v-if="followerRolled && followerRolled.FollowerTypeId === 5" class="alignment-select" v-model="selectedAlignmentId">
                 <option disabled :value="null">Leader Alignment</option>
                 <option v-for="alignment in availableAlignments" :value="alignment.AlignmentId">{{ alignment.AlignmentName }}</option>
             </select>
         </b-modal>
-        <button @click="rollFollower" v-if="chartData.length > 0">Roll 1d{{ chartData[chartData.length - 1].HighRoll }}</button>
+        <button @click="openRedirectModal" v-if="chartData.length > 0">Roll 1d{{ chartData[chartData.length - 1].HighRoll }}</button>
     </div>
 </template>
 
@@ -31,7 +36,9 @@ export default {
             selectedLeaderClassId: null,
             leaderClasses: [],
             loadingModal: false,
-            chartData: []
+            chartData: [],
+            followerRoll: null,
+            followerRolled: null
         }
     },
     created() {
@@ -46,6 +53,9 @@ export default {
     },
     methods: {
         confirmRedirectModal () {
+            this.redirectToFollower(this.followerRolled)  
+        },
+        redirectToAllyChart () {
             switch (this.selectedAlignmentId) {
                 case 1:
                     window.location.href = '/follower_chart/19'
@@ -78,6 +88,10 @@ export default {
         },
         openRedirectModal() {
             this.loadingModal = true
+            this.followerRoll = Math.floor(Math.random() * (this.chartData[this.chartData.length - 1].HighRoll) + 1)
+            this.followerRolled = this.chartData.find(follower => {
+                return this.followerRoll >= follower.LowRoll && this.followerRoll <= follower.HighRoll
+            }).FollowerChart
             if (!this.availableAlignments) {
                 axios.get('/alignment')
                     .then(result => {
@@ -87,14 +101,52 @@ export default {
             }
             this.$bvModal.show('redirect-modal')
         },
-        selectLeaderClass () {
+        redirectToFollower (followerChart) {
+            switch (followerChart.FollowerTypeId) {
+                case 1:
+                    window.location.href = `/unit_card/${followerChart.RollableUnitId}`
+                    break
+                case 2:
+                    window.location.href = `/retainer_card/${followerChart.RetainerClassId}`
+                    break
+                case 3:
+                    window.location.href = `/artisan_card/${followerChart.ArtisanId}`
+                    break
+                case 4:
+                    window.location.href = `/ambassador_card/${followerChart.AmbassadorLookupId}`
+                    break
+                case 5:
+                    if (this.selectedAlignmentId != null) {
+                        this.redirectToAllyChart()
+                    } else {
+                        this.openRedirectModal()
+                    }
+                    break
+                case 6:
+                    window.location.href = '/follower_chart/15'
+                    break
+                case 7:
+                    window.location.href = '/follower_chart/16'
+                    break
+                case 8:
+                    window.location.href = '/follower_chart/17'
+                    break
+                case 9:
+                    window.location.href = '/follower_chart/18'
+                    break
+                case 12:
+                    window.location.href = `/mount_card/${followerChart.PaladinMountLookupId}`
+                    break
+                // 10, 11, 13, 14
+                default:
+                    window.location.href = `/ally_card/${followerChart.AllyLookupId}`
+            }
+        },
+        selectLeaderClass() {
             axios.get(`/follower/${this.selectedLeaderClassId}`)
                 .then(result => {
                     this.chartData = result.data
                 })
-        },
-        rollFollower() {
-            console.log(Math.floor(Math.random() * (this.chartData[this.chartData.length - 1].HighRoll) + 1))   
         }
     }
 }

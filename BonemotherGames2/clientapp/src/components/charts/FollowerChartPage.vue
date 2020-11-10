@@ -8,8 +8,20 @@
         <b-modal id="redirect-modal" title="Your Roll" @ok="confirmRedirectModal">
             <h3>{{ followerRoll }}: {{ followerRolled ? followerRolled.FollowerName : '' }}</h3>
 
-            <label for="name">Name (optional):</label>
-            <input type="text" id="name" name="name"><br><br>
+            <label for="name">Name: </label>
+            <input type="text" id="nameInput" name="name"><br><br>
+
+            <select v-if="followerRolled && (followerRolled.FollowerTypeId === 1 || followerRolled.FollowerTypeId === 2 || followerRolled.FollowerTypeId === 3)"
+                    v-model="selectedAncestryId"
+                    @change="selectAncestry" >
+                <option disabled :value="null">Ancestry</option>
+                <option v-for="ancestry in availableAncestries" :value="ancestry.AncestryId">{{ ancestry.AncestryName }}</option>
+            </select>
+
+            <select v-if="hasSubancestryOptions" v-model="selectedSubancestryId">
+                <option disabled :value="null">Subancestry</option>
+                <option v-for="subancestry in availableSubancestries[selectedAncestryId]" :value="subancestry.SubancestryId">{{ subancestry.SubancestryName }}</option>
+            </select>
 
             <select v-if="followerRolled && followerRolled.FollowerTypeId === 5" class="alignment-select" v-model="selectedAlignmentId">
                 <option disabled :value="null">Leader Alignment</option>
@@ -33,15 +45,27 @@ export default {
         return {
             availableAlignments: null,
             selectedAlignmentId: null,
+            availableAncestries: null,
+            selectedAncestryId: null,
+            availableSubancestries: {},
+            selectedSubancestryId: null,
+            randomAncestralName: null,
             selectedLeaderClassId: null,
             leaderClasses: [],
-            loadingModal: false,
             chartData: [],
             followerRoll: null,
             followerRolled: null
         }
     },
-    created() {
+    computed: {
+        hasSubancestryOptions() {
+            return this.selectedAncestryId != null && this.availableSubancestries[this.selectedAncestryId] != null && this.followerRolled && (this.followerRolled.FollowerTypeId === 2 || this.followerRolled.FollowerTypeId === 3)
+        },
+        loadingModal () {
+            return !(this.availableAlignments && this.availableAncestries)
+        }
+    },
+    created () {
         axios.get('/follower')
             .then(result => {
                 this.leaderClasses = result.data
@@ -86,8 +110,7 @@ export default {
                     break
             }
         },
-        openRedirectModal() {
-            this.loadingModal = true
+        openRedirectModal () {
             this.followerRoll = Math.floor(Math.random() * (this.chartData[this.chartData.length - 1].HighRoll) + 1)
             this.followerRolled = this.chartData.find(follower => {
                 return this.followerRoll >= follower.LowRoll && this.followerRoll <= follower.HighRoll
@@ -96,7 +119,12 @@ export default {
                 axios.get('/alignment')
                     .then(result => {
                         this.availableAlignments = result.data
-                        this.loadingModal = false
+                    })
+            }
+            if (!this.availableAncestries) {
+                axios.get('/ancestry')
+                    .then(result => {
+                        this.availableAncestries = result.data
                     })
             }
             this.$bvModal.show('redirect-modal')
@@ -142,7 +170,15 @@ export default {
                     window.location.href = `/ally_card/${followerChart.AllyLookupId}`
             }
         },
-        selectLeaderClass() {
+        selectAncestry () {
+            if (!this.availableSubancestries[this.selectedAncestryId]) {
+                axios.get(`/subancestry/${this.selectedAncestryId}`)
+                    .then(result => {
+                        this.$set(this.availableSubancestries, this.selectedAncestryId, result.data)
+                    })
+            }
+        },
+        selectLeaderClass () {
             axios.get(`/follower/${this.selectedLeaderClassId}`)
                 .then(result => {
                     this.chartData = result.data

@@ -7,15 +7,15 @@ namespace BonemotherGames2.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class AlignmentController : ControllerBase
+    public class SubancestryController : ControllerBase
     {
-        [HttpGet]
-        public string Get()
+        [HttpGet("{ancestryId}")]
+        public string Get(int ancestryId)
         {
             using (var ctx = new BonemotherGamesContext())
             {
-                var alignments = ctx.Alignment.ToList();
-                return JsonSerializer.Serialize(alignments);
+                var subancestries = ctx.Subancestry.Where(x => x.AncestryId == ancestryId).ToList();
+                return JsonSerializer.Serialize(subancestries);
             }
         }
     }

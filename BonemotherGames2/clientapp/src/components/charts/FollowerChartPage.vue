@@ -19,7 +19,8 @@
             </select>
 
             <select v-if="hasSubancestryOptions" v-model="selectedSubancestryId">
-                <option disabled :value="null">Subancestry</option>
+                <option v-if="subancestryRequired" disabled :value="null">Subancestry</option>
+                <option v-else :value="null">None</option>
                 <option v-for="subancestry in availableSubancestries[selectedAncestryId]" :value="subancestry.SubancestryId">{{ subancestry.SubancestryName }}</option>
             </select>
 
@@ -44,17 +45,18 @@ export default {
     data () {
         return {
             availableAlignments: null,
-            selectedAlignmentId: null,
             availableAncestries: null,
-            selectedAncestryId: null,
             availableSubancestries: {},
-            selectedSubancestryId: null,
-            randomAncestralName: null,
-            selectedLeaderClassId: null,
-            leaderClasses: [],
             chartData: [],
             followerRoll: null,
-            followerRolled: null
+            followerRolled: null,
+            leaderClasses: [],
+            randomAncestralName: null,
+            selectedAlignmentId: null,
+            selectedAncestryId: null,
+            selectedLeaderClassId: null,
+            selectedSubancestryId: null,
+            subancestryRequired: false
         }
     },
     computed: {
@@ -171,10 +173,15 @@ export default {
             }
         },
         selectAncestry () {
+            this.selectedSubancestryId = null
+            this.subancestryRequired = this.availableAncestries.find(ancestry => ancestry.AncestryId === this.selectedAncestryId).SubancestryRequired
             if (!this.availableSubancestries[this.selectedAncestryId]) {
                 axios.get(`/subancestry/${this.selectedAncestryId}`)
                     .then(result => {
                         this.$set(this.availableSubancestries, this.selectedAncestryId, result.data)
+                        if (this.subancestryRequired) {
+                            this.selectedSubancestryId = result.data[0].SubancestryId
+                        }
                     })
             }
         },

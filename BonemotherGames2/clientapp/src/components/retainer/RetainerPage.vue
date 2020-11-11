@@ -32,10 +32,10 @@ export default {
         axios.get(retainerRoute)
             .then(result => {
                 this.randomRetainer = result.data
+                if (this.$route.query.followerName != null) {
+                    this.randomRetainer.Name = this.$route.query.followerName
+                }
             })
-        console.log(this.$route.query.followerName)
-        console.log(this.$route.query.ancestry)
-        console.log(this.$route.query.subancestry)
     }
 }
 </script>

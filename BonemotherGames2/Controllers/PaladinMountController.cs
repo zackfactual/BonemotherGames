@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using BonemotherGames2.Entities;
 using BonemotherGames2.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace BonemotherGames2.Controllers
 {
@@ -23,7 +19,12 @@ namespace BonemotherGames2.Controllers
                 var paladinMountLookup = ctx.PaladinMountLookup.Where(x => x.PaladinMountLookupId == paladinMountLookupId).First();
                 paladinMount.MountType = paladinMountLookup.PaladinMountName;
             }
-            return JsonSerializer.Serialize(paladinMount);
+            var json = JsonConvert.SerializeObject(paladinMount, new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+            return json;
         }
     }
 }

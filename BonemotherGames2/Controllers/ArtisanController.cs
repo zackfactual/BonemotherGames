@@ -1,6 +1,6 @@
-﻿using System.Text.Json;
-using BonemotherGames2.Services;
+﻿using BonemotherGames2.Services;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace BonemotherGames2.Controllers
 {
@@ -13,7 +13,12 @@ namespace BonemotherGames2.Controllers
         {
             Artisan artisan = new Artisan();
             artisan = artisan.ConstructArtisan(artisanLookupId);
-            return JsonSerializer.Serialize(artisan);
+            var json = JsonConvert.SerializeObject(artisan, new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+            return json;
         }
     }
 }

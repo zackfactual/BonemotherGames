@@ -1,8 +1,6 @@
-﻿using System.Linq;
-using System.Text.Json;
-using BonemotherGames2.Entities;
-using BonemotherGames2.Services;
+﻿using BonemotherGames2.Services;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace BonemotherGames2.Controllers
 {
@@ -12,14 +10,24 @@ namespace BonemotherGames2.Controllers
     {
         [HttpGet("{ancestryId}")]
         public string Get(int ancestryId) 
-        { 
-            return JsonSerializer.Serialize(CharacterNameGenerator.GetRandomAncestralName(ancestryId, null));
+        {
+            var json = JsonConvert.SerializeObject(CharacterNameGenerator.GetRandomAncestralName(ancestryId, null), new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+            return json;
         }
 
         [HttpGet("{ancestryId}/{subancestryId}")]
         public string Get(int ancestryId, int subancestryId)
         {
-            return JsonSerializer.Serialize(CharacterNameGenerator.GetRandomAncestralName(ancestryId, subancestryId));
+            var json = JsonConvert.SerializeObject(CharacterNameGenerator.GetRandomAncestralName(ancestryId, subancestryId), new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+            return json;
         }
     }
 }

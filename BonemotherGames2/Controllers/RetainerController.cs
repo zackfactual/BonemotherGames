@@ -1,7 +1,6 @@
-﻿using System.Text.Json;
-using BonemotherGames.Services;
+﻿using BonemotherGames.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace BonemotherGames.Controllers
 {
@@ -16,7 +15,42 @@ namespace BonemotherGames.Controllers
             retainer.RetainerClass = retainer.GetRetainerClass(retainerClassId);
             retainer.ConstructRetainer(retainer);
 
-            return JsonSerializer.Serialize(retainer);
+            var json = JsonConvert.SerializeObject(retainer, new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+            return json;
+        }
+
+        [HttpGet("{retainerClassId}/{ancestryId}")]
+        public string Get(int retainerClassId, int ancestryId)
+        {
+            Retainer retainer = new Retainer();
+            retainer.RetainerClass = retainer.GetRetainerClass(retainerClassId);
+            retainer.ConstructRetainerWithAncestry(retainer, ancestryId);
+
+            var json = JsonConvert.SerializeObject(retainer, new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+            return json;
+        }
+
+        [HttpGet("{retainerClassId}/{ancestryId}/{subancestryId}")]
+        public string Get(int retainerClassId, int ancestryId, int subancestryId)
+        { 
+            Retainer retainer = new Retainer();
+            retainer.RetainerClass = retainer.GetRetainerClass(retainerClassId);
+            retainer.ConstructRetainerWithSubancestry(retainer, ancestryId, subancestryId);
+
+            var json = JsonConvert.SerializeObject(retainer, new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+            return json;
         }
     }
 }

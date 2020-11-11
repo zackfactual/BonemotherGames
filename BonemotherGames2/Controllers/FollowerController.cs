@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using BonemotherGames2.Entities;
 using BonemotherGames2.Services;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace BonemotherGames2.Controllers
 {
@@ -17,7 +17,12 @@ namespace BonemotherGames2.Controllers
             using (var ctx = new BonemotherGamesContext())
             {
                 var followerSources = ctx.FollowerSource.ToList();
-                return JsonSerializer.Serialize(followerSources);
+                var json = JsonConvert.SerializeObject(followerSources, new JsonSerializerSettings
+                {
+                    Formatting = Formatting.Indented,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                });
+                return json;
             }
         }
 
@@ -35,7 +40,12 @@ namespace BonemotherGames2.Controllers
                     follower.ConstructFollowerFromLeaderClassId(follower, followerSourceFollowerChart);
                     followers.Add(follower);
                 }
-                return JsonSerializer.Serialize(followers);
+                var json = JsonConvert.SerializeObject(followers, new JsonSerializerSettings
+                {
+                    Formatting = Formatting.Indented,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                });
+                return json;
             }
         }
     }

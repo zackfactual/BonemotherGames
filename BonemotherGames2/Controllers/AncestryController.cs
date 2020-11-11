@@ -1,7 +1,7 @@
 ﻿using System.Linq;
-using System.Text.Json;
 using BonemotherGames2.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace BonemotherGames2.Controllers
 {
@@ -15,7 +15,12 @@ namespace BonemotherGames2.Controllers
             using (var ctx = new BonemotherGamesContext())
             {
                 var ancestries = ctx.Ancestry.ToList();
-                return JsonSerializer.Serialize(ancestries);
+                var json = JsonConvert.SerializeObject(ancestries, new JsonSerializerSettings
+                {
+                    Formatting = Formatting.Indented,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                });
+                return json;
             }
         }
     }

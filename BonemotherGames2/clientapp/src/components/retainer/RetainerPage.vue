@@ -20,8 +20,14 @@ export default {
     },
     beforeCreate () {
         let retainerRoute = '/Retainer'
-        if (this.$route.params.retainer_class_id) {
+        if (this.$route.params.retainer_class_id != null) {
             retainerRoute = retainerRoute.concat(`/${this.$route.params.retainer_class_id}`)
+            if (this.$route.query.ancestry != null) {
+                retainerRoute = retainerRoute.concat(`/${this.$route.query.ancestry}`)
+                if (this.$route.query.subancestry != null) {
+                    retainerRoute = retainerRoute.concat(`/${this.$route.query.subancestry}`)
+                }
+            }
         }
         axios.get(retainerRoute)
             .then(result => {

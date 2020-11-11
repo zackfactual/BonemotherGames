@@ -14,8 +14,14 @@ namespace BonemotherGames2.Services
             {
                 var rand = new Random();
                 List<NameAncestry> ancestralNames = new List<NameAncestry>();
-                ancestralNames = subancestryId != null ? ctx.NameAncestry.Where(x => x.AncestryId == ancestryId && x.SubancestryId == subancestryId).ToList() :
+                if (subancestryId != null && ctx.Subancestry.Where(x => x.SubancestryId == subancestryId).Select(x => x.NameRequired).Any() == true)
+                {
+                    ancestralNames = ctx.NameAncestry.Where(x => x.SubancestryId == subancestryId).ToList();
+                }
+                else
+                {
                     ancestralNames = ctx.NameAncestry.Where(x => x.AncestryId == ancestryId).ToList();
+                }
                 if (ancestralNames.Count == 0)
                 {
                     ancestralNames = ctx.NameAncestry.Where(x => x.AncestryId == ancestryId).ToList();

@@ -11,6 +11,7 @@ namespace BonemotherGames2.Entities
         public int? Darkvision { get; set; }
         public int? Speed { get; set; }
         public bool AllowRetainer { get; set; }
+        public bool NameRequired { get; set; }
 
         public virtual Ancestry Ancestry { get; set; }
     }

@@ -26,6 +26,9 @@ export default {
         axios.get(unitRoute)
             .then(result => {
                 this.randomUnit = result.data
+                if (this.$route.query.followerName != null) {
+                    this.randomUnit.Name = this.$route.query.followerName
+                }
             })
     }
 }

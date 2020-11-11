@@ -7,6 +7,7 @@ namespace BonemotherGames2.Services
 {
     public class MilitaryUnit
     {
+        public string Name { get; set; }
         public string AncestryName { get; set; }
         public string UnitExperienceName { get; set; }
         public string UnitEquipmentName { get; set; }

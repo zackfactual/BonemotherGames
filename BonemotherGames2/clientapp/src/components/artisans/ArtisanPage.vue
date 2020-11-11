@@ -26,6 +26,17 @@ export default {
         axios.get(artisanRoute)
             .then(result => {
                 this.randomArtisan = result.data
+                if (this.$route.query.followerName != null) {
+                    this.randomArtisan.Name = this.$route.query.followerName
+                }
+                if (this.$route.query.ancestry != null) {
+                    console.log(this.$route.query.ancestry)
+                    // todo: get this.randomArtisan.Ancestry.AncestryName from ancestryId 
+                    if (this.$route.query.subancestry != null) {
+                        console.log(this.$route.query.subancestry)
+                        // todo: get this.randomArtisan.Subancestry.SubancestryName from subancestryId 
+                    }
+                }
             })
     }
 }

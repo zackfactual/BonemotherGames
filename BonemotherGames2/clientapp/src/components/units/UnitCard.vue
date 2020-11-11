@@ -1,6 +1,6 @@
 ﻿<template>
     <div class="unit-card">
-        <h2>{{ unitData.AncestryName }} Squad</h2>
+        <h2>{{ unitData.Name }}</h2>
         <p>{{ unitData.AncestryName }} {{ unitData.UnitExperienceName }} {{ unitData.UnitEquipmentName }} {{ unitData.UnitTypeName }}</p>
 
         <p>Cost: {{ unitData.Cost }}</p>

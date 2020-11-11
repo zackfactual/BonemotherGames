@@ -1,6 +1,7 @@
 ﻿<template>
     <div class="mount-card">
-        <h2>{{ mountData.MountType }}</h2>
+        <h2>{{ mountData.Name }}</h2>
+        <h3>{{ mountData.MountType }}</h3>
     </div>
 </template>
 

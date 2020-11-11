@@ -26,6 +26,9 @@ export default {
         axios.get(mountRoute)
             .then(result => {
                 this.randomMount = result.data
+                if (this.$route.query.followerName != null) {
+                    this.randomMount.Name = this.$route.query.followerName
+                }
             })
     }
 }

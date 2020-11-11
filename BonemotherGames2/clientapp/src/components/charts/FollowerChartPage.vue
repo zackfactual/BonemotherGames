@@ -8,16 +8,29 @@
         <b-modal id="redirect-modal" title="Your Roll" @ok="confirmRedirectModal">
             <h3>{{ followerRoll }}: {{ followerRolled ? followerRolled.FollowerName : '' }}</h3>
 
-            <label for="name">Name: </label>
-            <input type="text" id="nameInput" name="name" v-model="followerName"><br><br>
-
-            <select v-if="followerRolled && (followerRolled.FollowerTypeId === 1 || followerRolled.FollowerTypeId === 2 || followerRolled.FollowerTypeId === 3)"
-                    v-model="selectedAncestryId"
-                    @change="selectAncestry" >
-                <option disabled :value="null">Ancestry</option>
-                <option v-for="ancestry in availableAncestries" :value="ancestry.AncestryId">{{ ancestry.AncestryName }}</option>
-            </select>
-
+            <div v-if="followerRolled && followerRolled.FollowerTypeId != 5
+                 && followerRolled.FollowerTypeId != 6
+                 && followerRolled.FollowerTypeId != 7
+                 && followerRolled.FollowerTypeId != 8
+                 && followerRolled.FollowerTypeId != 9">
+                <label for="name">Optional Name: </label>
+                <input type="text" id="nameInput" name="name" v-model="followerName"><br><br>
+            </div>
+           
+            <div v-if="followerRolled && (followerRolled.FollowerTypeId === 1 ||
+                    followerRolled.FollowerTypeId === 2 ||
+                    followerRolled.FollowerTypeId === 3)">
+                <label for="ancestry">Optional Ancestry: </label>
+                <select v-if="followerRolled && (followerRolled.FollowerTypeId === 1 ||
+                    followerRolled.FollowerTypeId === 2 ||
+                    followerRolled.FollowerTypeId === 3)"
+                        v-model="selectedAncestryId"
+                        @change="selectAncestry">
+                    <option disabled :value="null">Ancestry</option>
+                    <option v-for="ancestry in availableAncestries" :value="ancestry.AncestryId">{{ ancestry.AncestryName }}</option>
+                </select>
+            </div>
+            
             <select v-if="hasSubancestryOptions"
                     v-model="selectedSubancestryId"
                     @change="getRandomName" >
@@ -26,10 +39,14 @@
                 <option v-for="subancestry in availableSubancestries[selectedAncestryId]" :value="subancestry.SubancestryId">{{ subancestry.SubancestryName }}</option>
             </select>
 
-            <select v-if="followerRolled && followerRolled.FollowerTypeId === 5" class="alignment-select" v-model="selectedAlignmentId">
-                <option disabled :value="null">Leader Alignment</option>
-                <option v-for="alignment in availableAlignments" :value="alignment.AlignmentId">{{ alignment.AlignmentName }}</option>
-            </select>
+            <div v-if="followerRolled && followerRolled.FollowerTypeId === 5">
+                <label for="ancestry">Required Leader Alignment: </label>
+                <select class="alignment-select" v-model="selectedAlignmentId">
+                    <option disabled :value="null">Leader Alignment</option>
+                    <option v-for="alignment in availableAlignments" :value="alignment.AlignmentId">{{ alignment.AlignmentName }}</option>
+                </select>
+            </div>
+            
         </b-modal>
         <button @click="openRedirectModal" v-if="chartData.length > 0">Roll 1d{{ chartData[chartData.length - 1].HighRoll }}</button>
     </div>

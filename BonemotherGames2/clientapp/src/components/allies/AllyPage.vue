@@ -26,6 +26,9 @@ export default {
         axios.get(allyRoute)
             .then(result => {
                 this.randomAlly = result.data
+                if (this.$route.query.followerName != null) {
+                    this.randomAlly.AllyName = this.$route.query.followerName
+                }
             })
     }
 }

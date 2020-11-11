@@ -26,6 +26,9 @@ export default {
         axios.get(ambassadorRoute)
             .then(result => {
                 this.randomAmbassador = result.data
+                if (this.$route.query.followerName != null) {
+                    this.randomAmbassador.Name = this.$route.query.followerName
+                }
             })
     }
 }

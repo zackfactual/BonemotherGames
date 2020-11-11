@@ -17,7 +17,7 @@ namespace BonemotherGames2.Controllers
             using (var ctx = new BonemotherGamesContext())
             {
                 var allyLookup = ctx.AllyLookup.Where(x => x.AllyLookupId == allyLookupId).First();
-                ally.Name = allyLookup.AllyLookupName;
+                ally.AllyType = allyLookup.AllyLookupName;
                 ally.IsUnit = allyLookup.IsUnit;
             }
             var json = JsonConvert.SerializeObject(ally, new JsonSerializerSettings

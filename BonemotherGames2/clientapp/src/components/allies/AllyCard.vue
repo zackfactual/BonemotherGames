@@ -1,7 +1,8 @@
 ﻿<template>
-        <div class="ally-card">
-            <h2>{{ allyData.Name }}</h2>
-        </div>
+    <div class="ally-card">
+        <h2>{{ allyData.AllyName }}</h2>
+        <h3>{{ allyData.AllyType }}</h3>
+    </div>
 </template>
 
 <script>

@@ -2,7 +2,8 @@
 {
     public class Ally
     {
-        public string Name { get; set; }
+        public string AllyName { get; set; }
+        public string AllyType { get; set; }
         public bool IsUnit { get; set; }
     }
 }

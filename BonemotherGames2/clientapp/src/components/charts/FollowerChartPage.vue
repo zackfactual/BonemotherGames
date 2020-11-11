@@ -9,7 +9,7 @@
             <h3>{{ followerRoll }}: {{ followerRolled ? followerRolled.FollowerName : '' }}</h3>
 
             <label for="name">Name: </label>
-            <input type="text" id="nameInput" name="name"><br><br>
+            <input type="text" id="nameInput" name="name" v-model="followerName"><br><br>
 
             <select v-if="followerRolled && (followerRolled.FollowerTypeId === 1 || followerRolled.FollowerTypeId === 2 || followerRolled.FollowerTypeId === 3)"
                     v-model="selectedAncestryId"
@@ -18,7 +18,9 @@
                 <option v-for="ancestry in availableAncestries" :value="ancestry.AncestryId">{{ ancestry.AncestryName }}</option>
             </select>
 
-            <select v-if="hasSubancestryOptions" v-model="selectedSubancestryId">
+            <select v-if="hasSubancestryOptions"
+                    v-model="selectedSubancestryId"
+                    @change="getRandomName" >
                 <option v-if="subancestryRequired" disabled :value="null">Subancestry</option>
                 <option v-else :value="null">None</option>
                 <option v-for="subancestry in availableSubancestries[selectedAncestryId]" :value="subancestry.SubancestryId">{{ subancestry.SubancestryName }}</option>
@@ -48,10 +50,10 @@ export default {
             availableAncestries: null,
             availableSubancestries: {},
             chartData: [],
+            followerName: null,
             followerRoll: null,
             followerRolled: null,
             leaderClasses: [],
-            randomAncestralName: null,
             selectedAlignmentId: null,
             selectedAncestryId: null,
             selectedLeaderClassId: null,
@@ -61,7 +63,7 @@ export default {
     },
     computed: {
         hasSubancestryOptions() {
-            return this.selectedAncestryId != null && this.availableSubancestries[this.selectedAncestryId] != null && this.followerRolled && (this.followerRolled.FollowerTypeId === 2 || this.followerRolled.FollowerTypeId === 3)
+            return this.selectedAncestryId != null && this.availableSubancestries[this.selectedAncestryId] && this.followerRolled && (this.followerRolled.FollowerTypeId === 2 || this.followerRolled.FollowerTypeId === 3)
         },
         loadingModal () {
             return !(this.availableAlignments && this.availableAncestries)
@@ -79,7 +81,17 @@ export default {
     },
     methods: {
         confirmRedirectModal () {
-            this.redirectToFollower(this.followerRolled)  
+            this.redirectToFollower(this.followerRolled)
+        },
+        getRandomName() {
+            let nameUrl = `/name/${this.selectedAncestryId}`
+            if (this.selectedSubancestryId) {
+                nameUrl.concat(`/${this.selectedSubancestryId}`)
+            }
+            axios.get(nameUrl)
+                .then(result => {
+                    this.followerName = result.data
+                })
         },
         redirectToAllyChart () {
             switch (this.selectedAlignmentId) {
@@ -132,18 +144,19 @@ export default {
             this.$bvModal.show('redirect-modal')
         },
         redirectToFollower (followerChart) {
+            let redirectUrl = null
             switch (followerChart.FollowerTypeId) {
                 case 1:
-                    window.location.href = `/unit_card/${followerChart.RollableUnitId}`
+                    redirectUrl = `/unit_card/${followerChart.RollableUnitId}`
                     break
                 case 2:
-                    window.location.href = `/retainer_card/${followerChart.RetainerClassId}`
+                    redirectUrl = `/retainer_card/${followerChart.RetainerClassId}`
                     break
                 case 3:
-                    window.location.href = `/artisan_card/${followerChart.ArtisanId}`
+                    redirectUrl = `/artisan_card/${followerChart.ArtisanId}`
                     break
                 case 4:
-                    window.location.href = `/ambassador_card/${followerChart.AmbassadorLookupId}`
+                    redirectUrl = `/ambassador_card/${followerChart.AmbassadorLookupId}`
                     break
                 case 5:
                     if (this.selectedAlignmentId != null) {
@@ -153,23 +166,26 @@ export default {
                     }
                     break
                 case 6:
-                    window.location.href = '/follower_chart/15'
+                    redirectUrl = '/follower_chart/15'
                     break
                 case 7:
-                    window.location.href = '/follower_chart/16'
+                    redirectUrl = '/follower_chart/16'
                     break
                 case 8:
-                    window.location.href = '/follower_chart/17'
+                    redirectUrl = '/follower_chart/17'
                     break
                 case 9:
-                    window.location.href = '/follower_chart/18'
+                    redirectUrl = '/follower_chart/18'
                     break
                 case 12:
-                    window.location.href = `/mount_card/${followerChart.PaladinMountLookupId}`
+                    redirectUrl = `/mount_card/${followerChart.PaladinMountLookupId}`
                     break
                 // 10, 11, 13, 14
                 default:
-                    window.location.href = `/ally_card/${followerChart.AllyLookupId}`
+                    redirectUrl = `/ally_card/${followerChart.AllyLookupId}`
+            }
+            if (redirectUrl) {
+                this.$router.push({ path: redirectUrl, query: { followerName: this.followerName, ancestry: this.selectedAncestryId, subancestry: this.selectedSubancestryId } })
             }
         },
         selectAncestry () {
@@ -178,11 +194,15 @@ export default {
             if (!this.availableSubancestries[this.selectedAncestryId]) {
                 axios.get(`/subancestry/${this.selectedAncestryId}`)
                     .then(result => {
-                        this.$set(this.availableSubancestries, this.selectedAncestryId, result.data)
-                        if (this.subancestryRequired) {
-                            this.selectedSubancestryId = result.data[0].SubancestryId
+                        if (result.data.length) {
+                            this.$set(this.availableSubancestries, this.selectedAncestryId, result.data)
                         }
+                        this.setDefaultSubancestry()
+                        this.getRandomName()
                     })
+            } else {
+                this.setDefaultSubancestry()
+                this.getRandomName()
             }
         },
         selectLeaderClass () {
@@ -190,6 +210,11 @@ export default {
                 .then(result => {
                     this.chartData = result.data
                 })
+        },
+        setDefaultSubancestry() {
+            if (this.subancestryRequired) {
+                this.selectedSubancestryId = this.availableSubancestries[this.selectedAncestryId][0].SubancestryId
+            }
         }
     }
 }

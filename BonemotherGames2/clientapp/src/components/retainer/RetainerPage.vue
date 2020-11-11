@@ -27,6 +27,9 @@ export default {
             .then(result => {
                 this.randomRetainer = result.data
             })
+        console.log(this.$route.query.followerName)
+        console.log(this.$route.query.ancestry)
+        console.log(this.$route.query.subancestry)
     }
 }
 </script>

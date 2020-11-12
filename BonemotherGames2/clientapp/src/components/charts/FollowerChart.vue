@@ -7,21 +7,32 @@
         <tr v-for="chartRow in chartData">
             <td>{{ chartRow.LowRoll }}<span v-if="chartRow.LowRoll != chartRow.HighRoll">-{{ chartRow.HighRoll }}</span></td>
             <td>{{ chartRow.FollowerChart.FollowerName }}</td>
-            <td><button @click="$emit('open-modal', chartRow.FollowerChart)">Customize</button></td>
-            <td><button @click="$emit('redirect-to-follower', chartRow.FollowerChart)">Randomize</button></td>
+            <td v-if="hideIfOtherChart(chartRow.FollowerChart.FollowerTypeId)"><button @click="$emit('open-modal', chartRow.FollowerChart)">Customize</button></td>
+            <td v-if="hideIfAlignmentBasedChart(chartRow.FollowerChart.FollowerTypeId)"><button @click="$emit('redirect-to-follower', chartRow.FollowerChart)">Randomize</button></td>
         </tr>
     </table>
 </template>
 
 <script>
-    export default {
-        props: {
-            chartData: {
-                type: Array,
-                required: true
-            }
+export default {
+    props: {
+        chartData: {
+            type: Array,
+            required: true
+        }
+    },
+    methods: {
+        hideIfAlignmentBasedChart(rowFollowerTypeId) {
+            return rowFollowerTypeId != 5
+        },
+        hideIfOtherChart (rowFollowerTypeId) {
+            return rowFollowerTypeId != 6 &&
+                rowFollowerTypeId != 7 &&
+                rowFollowerTypeId != 8 &&
+                rowFollowerTypeId != 9
         }
     }
+}
 </script>
 
 <style lang="scss">

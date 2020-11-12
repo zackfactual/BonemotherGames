@@ -93,12 +93,18 @@ export default {
             })
         if (this.$route.params.leader_class_id) {
             this.selectedLeaderClassId = this.$route.params.leader_class_id
-            this.selectLeaderClass()
+            this.getChartData()
         }
     },
     methods: {
         confirmRedirectModal () {
             this.redirectToFollower(this.followerRolled)
+        },
+        getChartData () {
+            axios.get(`/follower/${this.selectedLeaderClassId}`)
+                .then(result => {
+                    this.chartData = result.data
+                })
         },
         getRandomName() {
             let nameUrl = `/name/${this.selectedAncestryId}`
@@ -162,18 +168,24 @@ export default {
         },
         redirectToFollower (followerChart) {
             let redirectUrl = null
+            let redirectQuery = {}
+            let newLeaderId = null
             switch (followerChart.FollowerTypeId) {
                 case 1:
                     redirectUrl = `/unit_card/${followerChart.RollableUnitId}`
+                    redirectQuery = { followerName: this.followerName, ancestry: this.selectedAncestryId, subancestry: this.selectedSubancestryId }
                     break
                 case 2:
                     redirectUrl = `/retainer_card/${followerChart.RetainerClassId}`
+                    redirectQuery = { followerName: this.followerName, ancestry: this.selectedAncestryId, subancestry: this.selectedSubancestryId }
                     break
                 case 3:
                     redirectUrl = `/artisan_card/${followerChart.ArtisanId}`
+                    redirectQuery = { followerName: this.followerName, ancestry: this.selectedAncestryId, subancestry: this.selectedSubancestryId }
                     break
                 case 4:
                     redirectUrl = `/ambassador_card/${followerChart.AmbassadorLookupId}`
+                    redirectQuery = { followerName: this.followerName, ancestry: this.selectedAncestryId, subancestry: this.selectedSubancestryId }
                     break
                 case 5:
                     if (this.selectedAlignmentId != null) {
@@ -183,26 +195,31 @@ export default {
                     }
                     break
                 case 6:
-                    redirectUrl = '/follower_chart/15'
+                    this.selectedLeaderClassId = 15
+                    this.selectLeaderClass()
                     break
                 case 7:
-                    redirectUrl = '/follower_chart/16'
+                    this.selectedLeaderClassId = 16
+                    this.selectLeaderClass()
                     break
                 case 8:
-                    redirectUrl = '/follower_chart/17'
+                    this.selectedLeaderClassId = 17
+                    this.selectLeaderClass()
                     break
                 case 9:
-                    redirectUrl = '/follower_chart/18'
+                    this.selectedLeaderClassId = 18
+                    this.selectLeaderClass()
                     break
                 case 12:
                     redirectUrl = `/mount_card/${followerChart.PaladinMountLookupId}`
+                    redirectQuery = { followerName: this.followerName, ancestry: this.selectedAncestryId, subancestry: this.selectedSubancestryId }
                     break
                 // 10, 11, 13, 14
                 default:
                     redirectUrl = `/ally_card/${followerChart.AllyLookupId}`
             }
             if (redirectUrl) {
-                this.$router.push({ path: redirectUrl, query: { followerName: this.followerName, ancestry: this.selectedAncestryId, subancestry: this.selectedSubancestryId } })
+                this.$router.push({ path: redirectUrl, query: redirectQuery })
             }
         },
         selectAncestry () {
@@ -223,10 +240,8 @@ export default {
             }
         },
         selectLeaderClass () {
-            axios.get(`/follower/${this.selectedLeaderClassId}`)
-                .then(result => {
-                    this.chartData = result.data
-                })
+            this.$router.push(`/follower_chart/${this.selectedLeaderClassId}`)
+            this.getChartData()
         },
         setDefaultSubancestry() {
             if (this.subancestryRequired) {

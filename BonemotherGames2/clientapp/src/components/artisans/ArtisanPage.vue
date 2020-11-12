@@ -1,6 +1,6 @@
 ﻿<template>
     <div class="artisan-page">
-        <artisan-card v-if="randomArtisan" :artisan-data="randomArtisan" />
+        <artisan-card v-if="artisan" :artisan-data="artisan" />
     </div>
 </template>
 
@@ -15,27 +15,25 @@ export default {
     },
     data () {
         return {
-            randomArtisan: null
+            artisan: null
         }
     },
     beforeCreate() {
         let artisanRoute = '/Artisan'
         if (this.$route.params.artisan_id) {
             artisanRoute = artisanRoute.concat(`/${this.$route.params.artisan_id}`)
+            if (this.$route.query.ancestry != null) {
+                artisanRoute = artisanRoute.concat(`/${this.$route.query.ancestry}`)
+                if (this.$route.query.subancestry != null) {
+                    artisanRoute = artisanRoute.concat(`/${this.$route.query.subancestry}`)
+                }
+            }
         }
         axios.get(artisanRoute)
             .then(result => {
-                this.randomArtisan = result.data
+                this.artisan = result.data
                 if (this.$route.query.followerName != null) {
-                    this.randomArtisan.Name = this.$route.query.followerName
-                }
-                if (this.$route.query.ancestry != null) {
-                    console.log(this.$route.query.ancestry)
-                    // todo: get this.randomArtisan.Ancestry.AncestryName from ancestryId 
-                    if (this.$route.query.subancestry != null) {
-                        console.log(this.$route.query.subancestry)
-                        // todo: get this.randomArtisan.Subancestry.SubancestryName from subancestryId 
-                    }
+                    this.artisan.Name = this.$route.query.followerName
                 }
             })
     }

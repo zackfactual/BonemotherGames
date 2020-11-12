@@ -14,7 +14,7 @@ namespace BonemotherGames2.Controllers
         {
             using (var ctx = new BonemotherGamesContext())
             {
-                var ancestries = ctx.Ancestry.ToList();
+                var ancestries = ctx.Ancestry.Where(x => x.AncestryId != 49).ToList();
                 var json = JsonConvert.SerializeObject(ancestries, new JsonSerializerSettings
                 {
                     Formatting = Formatting.Indented,

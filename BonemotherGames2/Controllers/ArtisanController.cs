@@ -20,5 +20,33 @@ namespace BonemotherGames2.Controllers
             });
             return json;
         }
+
+        [HttpGet("{artisanLookupId}/{ancestryId}")]
+        public string Get(int artisanLookupId, int ancestryId)
+        {
+            Artisan artisan = new Artisan();
+            artisan.ConstructArtisanWithAncestry(artisanLookupId, ancestryId);
+
+            var json = JsonConvert.SerializeObject(artisan, new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+            return json;
+        }
+
+        [HttpGet("{artisanLookupId}/{ancestryId}/{subancestryId}")]
+        public string Get(int artisanLookupId, int ancestryId, int subancestryId)
+        {
+            Artisan artisan = new Artisan();
+            artisan.ConstructArtisanWithSubancestry(artisanLookupId, ancestryId, subancestryId);
+
+            var json = JsonConvert.SerializeObject(artisan, new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+            return json;
+        }
     }
 }

@@ -6,7 +6,9 @@
         </tr>
         <tr v-for="chartRow in chartData">
             <td>{{ chartRow.LowRoll }}<span v-if="chartRow.LowRoll != chartRow.HighRoll">-{{ chartRow.HighRoll }}</span></td>
-            <td><button @click="$emit('row-selected', chartRow.FollowerChart)">{{ chartRow.FollowerChart.FollowerName }}</button><button>Customize</button><button>Randomize</button></td>
+            <td>{{ chartRow.FollowerChart.FollowerName }}</td>
+            <td><button @click="$emit('open-modal', chartRow.FollowerChart)">Customize</button></td>
+            <td><button @click="$emit('redirect-to-follower', chartRow.FollowerChart)">Randomize</button></td>
         </tr>
     </table>
 </template>

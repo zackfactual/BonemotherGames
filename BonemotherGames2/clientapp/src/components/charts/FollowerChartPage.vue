@@ -4,26 +4,26 @@
             <option disabled :value="null">Leader Class</option>
             <option v-for="leaderClass in leaderClasses" :value="leaderClass.LeaderClassId">{{ leaderClass.LeaderClassName }}</option>
         </select>
-        <follower-chart v-if="selectedLeaderClassId" v-bind="{ chartData }" @row-selected="redirectToFollower($event)" />
+        <follower-chart v-if="selectedLeaderClassId" v-bind="{ chartData }" @open-modal="openModalForRow($event)" @redirect-to-follower="redirectToFollower($event)" />
         <b-modal id="redirect-modal" title="Your Roll" @ok="confirmRedirectModal">
-            <h3>{{ followerRoll }}: {{ followerRolled ? followerRolled.FollowerName : '' }}</h3>
+            <h3><span v-if="followerRoll != null">{{ followerRoll }}: </span>{{ selectedFollower ? selectedFollower.FollowerName : '' }}</h3>
 
-            <div v-if="followerRolled && followerRolled.FollowerTypeId != 5
-                 && followerRolled.FollowerTypeId != 6
-                 && followerRolled.FollowerTypeId != 7
-                 && followerRolled.FollowerTypeId != 8
-                 && followerRolled.FollowerTypeId != 9">
+            <div v-if="selectedFollower && selectedFollower.FollowerTypeId != 5
+                 && selectedFollower.FollowerTypeId != 6
+                 && selectedFollower.FollowerTypeId != 7
+                 && selectedFollower.FollowerTypeId != 8
+                 && selectedFollower.FollowerTypeId != 9">
                 <label for="name">Optional Name: </label>
                 <input type="text" id="nameInput" name="name" v-model="followerName"><br><br>
             </div>
            
-            <div v-if="followerRolled && (followerRolled.FollowerTypeId === 1 ||
-                    followerRolled.FollowerTypeId === 2 ||
-                    followerRolled.FollowerTypeId === 3)">
+            <div v-if="selectedFollower && (selectedFollower.FollowerTypeId === 1 ||
+                    selectedFollower.FollowerTypeId === 2 ||
+                    selectedFollower.FollowerTypeId === 3)">
                 <label for="ancestry">Optional Ancestry: </label>
-                <select v-if="followerRolled && (followerRolled.FollowerTypeId === 1 ||
-                    followerRolled.FollowerTypeId === 2 ||
-                    followerRolled.FollowerTypeId === 3)"
+                <select v-if="selectedFollower && (selectedFollower.FollowerTypeId === 1 ||
+                    selectedFollower.FollowerTypeId === 2 ||
+                    selectedFollower.FollowerTypeId === 3)"
                         v-model="selectedAncestryId"
                         @change="selectAncestry">
                     <option disabled :value="null">Ancestry</option>
@@ -39,7 +39,7 @@
                 <option v-for="subancestry in availableSubancestries[selectedAncestryId]" :value="subancestry.SubancestryId">{{ subancestry.SubancestryName }}</option>
             </select>
 
-            <div v-if="followerRolled && followerRolled.FollowerTypeId === 5">
+            <div v-if="selectedFollower && selectedFollower.FollowerTypeId === 5">
                 <label for="ancestry">Required Leader Alignment: </label>
                 <select class="alignment-select" v-model="selectedAlignmentId">
                     <option disabled :value="null">Leader Alignment</option>
@@ -48,7 +48,7 @@
             </div>
             
         </b-modal>
-        <button @click="openRedirectModal" v-if="chartData.length > 0">Roll 1d{{ chartData[chartData.length - 1].HighRoll }}</button>
+        <button @click="rollFollower" v-if="chartData.length > 0">Roll 1d{{ chartData[chartData.length - 1].HighRoll }}</button>
     </div>
 </template>
 
@@ -69,7 +69,7 @@ export default {
             chartData: [],
             followerName: null,
             followerRoll: null,
-            followerRolled: null,
+            selectedFollower: null,
             leaderClasses: [],
             selectedAlignmentId: null,
             selectedAncestryId: null,
@@ -80,7 +80,7 @@ export default {
     },
     computed: {
         hasSubancestryOptions() {
-            return this.selectedAncestryId != null && this.availableSubancestries[this.selectedAncestryId] && this.followerRolled && (this.followerRolled.FollowerTypeId === 2 || this.followerRolled.FollowerTypeId === 3)
+            return this.selectedAncestryId != null && this.availableSubancestries[this.selectedAncestryId] && this.selectedFollower && (this.selectedFollower.FollowerTypeId === 2 || this.selectedFollower.FollowerTypeId === 3)
         },
         loadingModal () {
             return !(this.availableAlignments && this.availableAncestries)
@@ -98,7 +98,7 @@ export default {
     },
     methods: {
         confirmRedirectModal () {
-            this.redirectToFollower(this.followerRolled)
+            this.redirectToFollower(this.selectedFollower)
         },
         getChartData () {
             axios.get(`/follower/${this.selectedLeaderClassId}`)
@@ -147,11 +147,12 @@ export default {
                     break
             }
         },
+        openModalForRow (followerChart) {
+            this.selectedFollower = followerChart
+            this.followerRoll = null
+            this.openRedirectModal()
+        },
         openRedirectModal () {
-            this.followerRoll = Math.floor(Math.random() * (this.chartData[this.chartData.length - 1].HighRoll) + 1)
-            this.followerRolled = this.chartData.find(follower => {
-                return this.followerRoll >= follower.LowRoll && this.followerRoll <= follower.HighRoll
-            }).FollowerChart
             if (!this.availableAlignments) {
                 axios.get('/alignment')
                     .then(result => {
@@ -166,26 +167,28 @@ export default {
             }
             this.$bvModal.show('redirect-modal')
         },
+        rollFollower () {
+            this.followerRoll = Math.floor(Math.random() * (this.chartData[this.chartData.length - 1].HighRoll) + 1)
+            this.selectedFollower = this.chartData.find(follower => {
+                return this.followerRoll >= follower.LowRoll && this.followerRoll <= follower.HighRoll
+            }).FollowerChart
+            this.openRedirectModal()
+        },
         redirectToFollower (followerChart) {
             let redirectUrl = null
-            let redirectQuery = {}
             let newLeaderId = null
             switch (followerChart.FollowerTypeId) {
                 case 1:
                     redirectUrl = `/unit_card/${followerChart.RollableUnitId}`
-                    redirectQuery = { followerName: this.followerName, ancestry: this.selectedAncestryId, subancestry: this.selectedSubancestryId }
                     break
                 case 2:
                     redirectUrl = `/retainer_card/${followerChart.RetainerClassId}`
-                    redirectQuery = { followerName: this.followerName, ancestry: this.selectedAncestryId, subancestry: this.selectedSubancestryId }
                     break
                 case 3:
                     redirectUrl = `/artisan_card/${followerChart.ArtisanId}`
-                    redirectQuery = { followerName: this.followerName, ancestry: this.selectedAncestryId, subancestry: this.selectedSubancestryId }
                     break
                 case 4:
                     redirectUrl = `/ambassador_card/${followerChart.AmbassadorLookupId}`
-                    redirectQuery = { followerName: this.followerName, ancestry: this.selectedAncestryId, subancestry: this.selectedSubancestryId }
                     break
                 case 5:
                     if (this.selectedAlignmentId != null) {
@@ -195,31 +198,30 @@ export default {
                     }
                     break
                 case 6:
-                    this.selectedLeaderClassId = 15
-                    this.selectLeaderClass()
+                    newLeaderId = 15
                     break
                 case 7:
-                    this.selectedLeaderClassId = 16
-                    this.selectLeaderClass()
+                    newLeaderId = 16
                     break
                 case 8:
-                    this.selectedLeaderClassId = 17
-                    this.selectLeaderClass()
+                    newLeaderId = 17
                     break
                 case 9:
-                    this.selectedLeaderClassId = 18
-                    this.selectLeaderClass()
+                    newLeaderId = 18
                     break
                 case 12:
                     redirectUrl = `/mount_card/${followerChart.PaladinMountLookupId}`
-                    redirectQuery = { followerName: this.followerName, ancestry: this.selectedAncestryId, subancestry: this.selectedSubancestryId }
                     break
                 // 10, 11, 13, 14
                 default:
                     redirectUrl = `/ally_card/${followerChart.AllyLookupId}`
             }
             if (redirectUrl) {
+                const redirectQuery = { followerName: this.followerName, ancestry: this.selectedAncestryId, subancestry: this.selectedSubancestryId }
                 this.$router.push({ path: redirectUrl, query: redirectQuery })
+            } else if (newLeaderId != null) {
+                this.selectedLeaderClassId = newLeaderId
+                this.selectLeaderClass()
             }
         },
         selectAncestry () {

@@ -1,14 +1,17 @@
 ﻿<template>
     <div class="retainer-card">
-        <h2>{{ retainerData.Name }}</h2>
-        <h3><span v-if="retainerData.Subancestry != null">{{ retainerData.Subancestry.SubancestryName }} </span><span v-if="retainerData.Ancestry.AncestryName.toLowerCase() != 'gith'">{{ retainerData.Ancestry.AncestryName }}</span> | {{ retainerData.RetainerClass.ClassName }}</h3>
+        <h2>
+            <input v-if="editable" v-model="retainer.Name" />
+            <span>{{ retainer.Name }}</span>
+        </h2>
+        <h3><span v-if="retainer.Subancestry != null">{{ retainer.Subancestry.SubancestryName }} </span><span v-if="retainer.Ancestry.AncestryName.toLowerCase() != 'gith'">{{ retainer.Ancestry.AncestryName }}</span> | {{ retainer.RetainerClass.ClassName }}</h3>
         <div>
             <span class="detail-label">Primary Ability: </span>
-            <span>{{ formatAbilities(retainerData.PrimaryAbilities) }}</span>
+            <span>{{ formatAbilities(retainer.PrimaryAbilities) }}</span>
         </div>
         <div>
             <span class="detail-label">Saves: </span>
-            <span>{{ formatAbilities(retainerData.Saves) }}</span>
+            <span>{{ formatAbilities(retainer.Saves) }}</span>
         </div>
         <div>
             <span class="detail-label">Skills: </span>
@@ -17,37 +20,37 @@
         <div>
             <span class="detail-label">Signature Attack: </span>
             <span>
-                <span class="action-name">{{ retainerData.Actions[0].ActionName }}</span><span v-if="retainerData.Actions[0].ActionDescription != null">: {{ retainerData.Actions[0].ActionDescription }}</span>
+                <span class="action-name">{{ retainer.Actions[0].ActionName }}</span><span v-if="retainer.Actions[0].ActionDescription != null">: {{ retainer.Actions[0].ActionDescription }}</span>
             </span>
         </div>
         <h4>Special Actions</h4>
         <div>
             <span class="detail-label">
-                3rd-Level ({{ retainerData.Actions[1].UsesPerDay }}/day<span v-if="retainerData.Actions[1].ActionTypeName.toLowerCase() != 'action'">, {{ retainerData.Actions[1].ActionTypeName }}</span>):
+                3rd-Level ({{ retainer.Actions[1].UsesPerDay }}/day<span v-if="retainer.Actions[1].ActionTypeName.toLowerCase() != 'action'">, {{ retainer.Actions[1].ActionTypeName }}</span>):
             </span>
             <span>
-                <span class="action-name">{{ retainerData.Actions[1].ActionName }}</span><span v-if="retainerData.Actions[1].ActionDescription != null">. {{ retainerData.Actions[1].ActionDescription }}</span>
+                <span class="action-name">{{ retainer.Actions[1].ActionName }}</span><span v-if="retainer.Actions[1].ActionDescription != null">. {{ retainer.Actions[1].ActionDescription }}</span>
             </span>
         </div>
         <div>
-            <span class="detail-label">5th-Level ({{ retainerData.Actions[2].UsesPerDay }}/day<span v-if="retainerData.Actions[2].ActionTypeName.toLowerCase() != 'action'">, {{ retainerData.Actions[2].ActionTypeName }}</span>): </span>
+            <span class="detail-label">5th-Level ({{ retainer.Actions[2].UsesPerDay }}/day<span v-if="retainer.Actions[2].ActionTypeName.toLowerCase() != 'action'">, {{ retainer.Actions[2].ActionTypeName }}</span>): </span>
             <span>
-                <span class="action-name">{{ retainerData.Actions[2].ActionName }}</span><span v-if="retainerData.Actions[2].ActionDescription != null">. {{ retainerData.Actions[2].ActionDescription }}</span>
+                <span class="action-name">{{ retainer.Actions[2].ActionName }}</span><span v-if="retainer.Actions[2].ActionDescription != null">. {{ retainer.Actions[2].ActionDescription }}</span>
             </span>
         </div>
         <div>
-            <span class="detail-label">7th-Level ({{ retainerData.Actions[3].UsesPerDay }}/day<span v-if="retainerData.Actions[3].ActionTypeName.toLowerCase() != 'action'">, {{ retainerData.Actions[3].ActionTypeName }}</span>): </span>
+            <span class="detail-label">7th-Level ({{ retainer.Actions[3].UsesPerDay }}/day<span v-if="retainer.Actions[3].ActionTypeName.toLowerCase() != 'action'">, {{ retainer.Actions[3].ActionTypeName }}</span>): </span>
             <span>
-                <span class="action-name">{{ retainerData.Actions[3].ActionName }}</span><span v-if="retainerData.Actions[3].ActionDescription != null">. {{ retainerData.Actions[3].ActionDescription }}</span>
+                <span class="action-name">{{ retainer.Actions[3].ActionName }}</span><span v-if="retainer.Actions[3].ActionDescription != null">. {{ retainer.Actions[3].ActionDescription }}</span>
             </span>
         </div>
-        <h4 v-if="retainerData.AncestryTraits && retainerData.AncestryTraits.length > 0">{{ retainerData.Ancestry.AncestryName }} Traits</h4>
-        <div v-for="trait in retainerData.AncestryTraits" :key="`trait-${trait.TraitId}`">
+        <h4 v-if="retainer.AncestryTraits && retainer.AncestryTraits.length > 0">{{ retainer.Ancestry.AncestryName }} Traits</h4>
+        <div v-for="trait in retainer.AncestryTraits" :key="`trait-${trait.TraitId}`">
             <span class="detail-label">{{ trait.TraitName }}: </span>
             <span>{{ trait.TraitDescription }}</span>
         </div>
-        <h4 v-if="retainerData.SubancestryTraits && retainerData.SubancestryTraits.length > 0">{{ retainerData.Subancestry.SubancestryName }} {{ retainerData.Ancestry.AncestryName }} Traits</h4>
-        <div v-for="trait in retainerData.SubancestryTraits" :key="`trait-${trait.TraitId}`">
+        <h4 v-if="retainer.SubancestryTraits && retainer.SubancestryTraits.length > 0">{{ retainer.Subancestry.SubancestryName }} {{ retainer.Ancestry.AncestryName }} Traits</h4>
+        <div v-for="trait in retainer.SubancestryTraits" :key="`trait-${trait.TraitId}`">
             <span class="detail-label">{{ trait.TraitName }}: </span>
             <span>{{ trait.TraitDescription }}</span>
         </div>
@@ -56,23 +59,44 @@
 
 <script>
 export default {
-    props: {
-        retainerData: {
-            type: Object,
-            default: () => {}
+    data () {
+        return {
+            editable: true,
+            retainer: null
         }
     },
     computed: {
-        formattedSkills () {
+        formattedDefaultSkills () {
             let skillString = ""
-            this.retainerData.Skills.forEach((skill, index) => {
+            this.retainer.Skills.forEach((skill, index) => {
                 skillString = skillString.concat(skill.SkillName)
-                if (index + 1 !== this.retainerData.Skills.length) {
+                if (index + 1 !== this.retainer.Skills.length) {
                     skillString = skillString.concat(", ")
                 }
             })
             return skillString
         }
+    },
+    beforeCreate () {
+        let retainerRoute = '/Retainer'
+        if (this.$route.params.retainer_class_id != null) {
+            retainerRoute = retainerRoute.concat(`/${this.$route.params.retainer_class_id}`)
+            if (this.$route.query.ancestry != null) {
+                retainerRoute = retainerRoute.concat(`/${this.$route.query.ancestry}`)
+                if (this.$route.query.subancestry != null) {
+                    retainerRoute = retainerRoute.concat(`/${this.$route.query.subancestry}`)
+                }
+            }
+        }
+        axios.get(retainerRoute)
+            .then(result => {
+                this.retainer = result.data
+                if (this.$route.query.followerName != null) {
+                    this.retainer.Name = this.$route.query.followerName
+                    this.retainer.currentSkills = this.formattedDefaultSkills
+                    this.retainer.signature = this.formatAbilities[retainer.Actions[0]]
+                }
+            })
     },
     methods: {
         formatAbilities(abilityArray) {

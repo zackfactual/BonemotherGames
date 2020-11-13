@@ -6,6 +6,7 @@
 
 <script>
 import ArtisanCard from '../artisans/ArtisanCard.vue'
+import CardMixin from '../mixins/CardMixin.js'
 
 import axios from 'axios'
 
@@ -13,22 +14,16 @@ export default {
     components: {
         ArtisanCard
     },
+    mixins: [
+        CardMixin
+    ],
     data () {
         return {
             artisan: null
         }
     },
-    beforeCreate() {
-        let artisanRoute = '/Artisan'
-        if (this.$route.params.artisan_id) {
-            artisanRoute = artisanRoute.concat(`/${this.$route.params.artisan_id}`)
-            if (this.$route.query.ancestry != null) {
-                artisanRoute = artisanRoute.concat(`/${this.$route.query.ancestry}`)
-                if (this.$route.query.subancestry != null) {
-                    artisanRoute = artisanRoute.concat(`/${this.$route.query.subancestry}`)
-                }
-            }
-        }
+    created () {
+        const artisanRoute = this.buildDataRetrievalUrl('/Artisan')
         axios.get(artisanRoute)
             .then(result => {
                 this.artisan = result.data

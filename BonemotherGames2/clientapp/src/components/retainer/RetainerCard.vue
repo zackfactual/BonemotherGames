@@ -58,7 +58,14 @@
 </template>
 
 <script>
+import CardMixin from '../mixins/CardMixin.js'
+
+import axios from 'axios'
+
 export default {
+    mixins: [
+        CardMixin
+    ],
     data () {
         return {
             editable: true,
@@ -77,17 +84,8 @@ export default {
             return skillString
         }
     },
-    beforeCreate () {
-        let retainerRoute = '/Retainer'
-        if (this.$route.params.retainer_class_id != null) {
-            retainerRoute = retainerRoute.concat(`/${this.$route.params.retainer_class_id}`)
-            if (this.$route.query.ancestry != null) {
-                retainerRoute = retainerRoute.concat(`/${this.$route.query.ancestry}`)
-                if (this.$route.query.subancestry != null) {
-                    retainerRoute = retainerRoute.concat(`/${this.$route.query.subancestry}`)
-                }
-            }
-        }
+    created () {
+        const retainerRoute = this.buildDataRetrievalUrl('/Retainer')
         axios.get(retainerRoute)
             .then(result => {
                 this.retainer = result.data

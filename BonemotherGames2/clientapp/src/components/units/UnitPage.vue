@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import CardMixin from '../mixins/CardMixin.js'
 import UnitCard from '../units/UnitCard.vue'
 
 import axios from 'axios'
@@ -13,16 +14,16 @@ export default {
     components: {
         UnitCard
     },
+    mixins: [
+        CardMixin
+    ],
     data () {
         return {
             randomUnit: null
         }
     },
-    beforeCreate () {
-        let unitRoute = '/MilitaryUnit'
-        if (this.$route.params.unit_id) {
-            unitRoute = unitRoute.concat(`/${this.$route.params.unit_id}`)
-        }
+    created () {
+        const unitRoute = this.buildDataRetrievalUrl('/MilitaryUnit')
         axios.get(unitRoute)
             .then(result => {
                 this.randomUnit = result.data

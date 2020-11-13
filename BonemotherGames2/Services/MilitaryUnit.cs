@@ -26,13 +26,21 @@ namespace BonemotherGames2.Services
 
         }
 
-        internal MilitaryUnit BuildUnit(int rollableUnitId)
+        internal MilitaryUnit BuildUnit(int rollableUnitId, int? ancestryId, int? subancestryId)
         {
             using (var ctx = new BonemotherGamesContext())
             {
                 var militaryUnit = new MilitaryUnit();
-                var ancestry = AncestryGenerator.GetRandomAncestry(false, true);
-                militaryUnit.AncestryName = ancestry.AncestryName;
+                var ancestry = ancestryId == null ? AncestryGenerator.GetRandomAncestry(false, true) : ctx.Ancestry.Where(x => x.AncestryId == ancestryId).First();
+                if (subancestryId != null)
+                {
+                    var subancestry = ctx.Subancestry.Where(x => x.SubancestryId == subancestryId).First();
+                    militaryUnit.AncestryName = ancestry.AncestryId == 46 ? subancestry.SubancestryName : subancestry.SubancestryName + ancestry.AncestryName;
+                }
+                else
+                {
+                    militaryUnit.AncestryName = ancestry.AncestryName;
+                }
                 militaryUnit.Traits = GetAncestralUnitTraits(ancestry.AncestryId);
 
                 var rollableUnit = ctx.RollableUnit.Where(x => x.RollableUnitId == rollableUnitId).First();

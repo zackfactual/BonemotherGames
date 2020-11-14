@@ -65,12 +65,12 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .retainer-card {
     border: 2px green solid;
     padding: 16px;
     background-color: white;
-    grid-column: 2 / span 5;
+    grid-column: 1 / span 6;
 }
 
 .detail-label, h4 {

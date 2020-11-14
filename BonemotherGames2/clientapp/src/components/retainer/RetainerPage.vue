@@ -1,18 +1,21 @@
 ﻿<template>
     <div class="retainer-page">
         <retainer-card v-if="retainer" :retainer="retainer" />
+        <retainer-card-editor v-if="retainer" :retainer="retainer" />
     </div>
 </template>
 
 <script>
 import CardMixin from '../mixins/CardMixin.js'
 import RetainerCard from '../retainer/RetainerCard.vue'
+import RetainerCardEditor from '../retainer/RetainerCardEditor.vue'
 
 import axios from 'axios'
 
 export default {
     components: {
-        RetainerCard
+        RetainerCard,
+        RetainerCardEditor
     },
     mixins: [
         CardMixin

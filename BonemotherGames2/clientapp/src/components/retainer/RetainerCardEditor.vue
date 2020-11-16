@@ -1,17 +1,38 @@
 ﻿<template>
     <div class="retainer-card-editor">
-        <h3><span v-if="editedRetainer && editedRetainer.Subancestry != null">{{ editedRetainer.Subancestry.SubancestryName }} </span><span v-if="editedRetainer && editedRetainer.Ancestry.AncestryName.toLowerCase() != 'gith'">{{ editedRetainer.Ancestry.AncestryName }}</span> | {{ retainer.editedRetainerClass.ClassName }}</h3>
+        <input type="text" name="retainerName" v-model="editedRetainer.Name">
+        <select name="retainerSubancestry" v-model="selectedSubancestryId">
+            <option value="null">Subancestry</option>
+            <option v-for="subancestry in availableSubancestries"
+                    :key="`subancestry-${subancestry.SubancestryId}`"
+                    :value="subancestry.SubancestryId">{{ subancestry.SubancestryName }}</option>
+        </select>
+        <select name="retainerAncestry" v-model="editedRetainer.Ancestry.AncestryId">
+            <option value="null">Ancestry</option>
+            <option v-for="ancestry in availableAncestries"
+                    :key="`ancestry-${ancestry.AncestryId}`"
+                    :value="ancestry.AncestryId">{{ ancestry.AncestryName }}</option>
+        </select>
+        <h3 v-if="editedRetainer">
+            | {{ editedRetainer.RetainerClass.ClassName }}
+        </h3>
     </div>
 </template>
 
 <script>
 import CardMixin from '../mixins/CardMixin.js'
 
+import axios from 'axios'
+
 export default {
     mixins: [
         CardMixin
     ],
     props: {
+        availableClasses: {
+            type: Array,
+            default: () => []
+        },
         retainer: {
             type: Object,
             required: true
@@ -19,15 +40,41 @@ export default {
     },
     data () {
         return {
-            editedRetainer: null
+            availableAncestries: null,
+            availableSubancestries: null,
+            editedRetainer: null,
+            selectedSubancestryId: null
         }
     },
-    beforeMounted () {
+    beforeMount () {
         this.editedRetainer = this.retainer
+        if (this.editedRetainer.Subancestry) {
+            this.selectedSubancestryId = this.editedRetainer.Subancestry.SubancestryId
+        }
+        this.getAvailableAncestries()
+        this.getAvailableSubancestries()
     },
     methods: {
-        displayAbilityLevel(level) {
+        displayAbilityLevel (level) {
             return level === 3 ? '3rd' : `${level}th`
+        },
+        getAvailableAncestries() {
+            axios.get('/ancestry')
+                .then(result => {
+                    this.availableAncestries = result.data.reduce((ancestries, ancestry) => {
+                        ancestries[ancestry.AncestryId] = ancestry
+                        return ancestries
+                    }, {})
+                })
+        },
+        getAvailableSubancestries () {
+            axios.get(`/subancestry/${this.editedRetainer.Ancestry.AncestryId}`)
+                .then(result => {
+                    this.availableSubancestries = result.data.reduce((subancestries, subancestry) => {
+                        subancestries[subancestry.SubancestryId] = subancestry
+                        return subancestries
+                    }, {})
+                })
         }
     }
 }

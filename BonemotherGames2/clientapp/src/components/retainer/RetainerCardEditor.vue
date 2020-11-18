@@ -1,7 +1,7 @@
 ﻿<template>
     <div class="retainer-card-editor">
         <input type="text" name="retainerName" v-model="editedRetainer.Name">
-        <select v-if="availableSubancestries[selectedAncestryId]" name="retainerSubancestry" v-model="selectedSubancestryId">
+        <select v-if="availableSubancestries[selectedAncestryId]" name="retainerSubancestry" v-model="selectedSubancestryId" @change="selectSubancestry">
             <option value="null">Subancestry</option>
             <option v-for="subancestry in availableSubancestries[selectedAncestryId]"
                     :key="`subancestry-${subancestry.SubancestryId}`"
@@ -14,7 +14,7 @@
                     :value="ancestry.AncestryId">{{ ancestry.AncestryName }}</option>
         </select>
         <h3 v-if="editedRetainer">
-            | {{ editedRetainer.RetainerClass.ClassName }}
+            {{ editedRetainer.RetainerClass.ClassName }}
         </h3>
     </div>
 </template>
@@ -90,19 +90,23 @@ export default {
             if (this.editedRetainer.Ancestry.SubancestryRequired) {
                 const subancestryKeys = Object.keys(this.availableSubancestries[this.selectedAncestryId])
                 this.selectedSubancestryId = subancestryKeys[0]
-                this.editedRetainer.Subancestry = this.availableSubancestries[this.selectedAncestryId][this.selectedSubancestryId]
+                this.$set(this.editedRetainer, 'Subancestry', this.availableSubancestries[this.selectedAncestryId][this.selectedSubancestryId])
             } else {
                 this.selectedSubancestryId = null
-                this.editedRetainer.Subancestry = null
+                this.$set(this.editedRetainer, 'Subancestry', null)
             }
         },
         selectAncestry () {
             const redirectQuery = { followerName: this.editedRetainer.Name, ancestry: this.selectedAncestryId }
             this.$router.push({ path: `/retainer_card/${this.editedRetainer.RetainerClass.RetainerClassId}`, query: redirectQuery })
-            this.editedRetainer.Ancestry = this.availableAncestries[this.selectedAncestryId]
+            this.$set(this.editedRetainer, 'Ancestry', this.availableAncestries[this.selectedAncestryId])
             this.selectedSubancestryId = null
-            this.editedRetainer.Subancestry = null
+            this.$set(this.editedRetainer, 'Subancestry', null)
             this.getAvailableSubancestries(true)
+        },
+        selectSubancestry () {
+            const selectedSubancestry = this.availableSubancestries[this.selectedAncestryId][this.selectedSubancestryId]
+            this.$set(this.editedRetainer, 'Subancestry', selectedSubancestry)
         }
     }
 }

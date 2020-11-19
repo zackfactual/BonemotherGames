@@ -1,6 +1,8 @@
 ﻿using BonemotherGames.Services;
+using BonemotherGames2.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace BonemotherGames.Controllers
 {
@@ -8,12 +10,27 @@ namespace BonemotherGames.Controllers
     [Route("[controller]")]
     public class RetainerController : ControllerBase
     {
+        [HttpGet]
+        public string Get()
+        {
+            using (var ctx = new BonemotherGamesContext())
+            {
+                var retainerClasses = ctx.RetainerClass.ToList();
+                var json = JsonConvert.SerializeObject(retainerClasses, new JsonSerializerSettings
+                {
+                    Formatting = Formatting.Indented,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                });
+                return json;
+            }
+        }
+
         [HttpGet("{retainerClassId}")]
         public string Get(int retainerClassId)
         {
             Retainer retainer = new Retainer();
             retainer.RetainerClass = retainer.GetRetainerClass(retainerClassId);
-            retainer.ConstructRetainer(retainer);
+            retainer.ConstructRetainer(retainer, null, null);
 
             var json = JsonConvert.SerializeObject(retainer, new JsonSerializerSettings
             {
@@ -28,7 +45,7 @@ namespace BonemotherGames.Controllers
         {
             Retainer retainer = new Retainer();
             retainer.RetainerClass = retainer.GetRetainerClass(retainerClassId);
-            retainer.ConstructRetainerWithAncestry(retainer, ancestryId);
+            retainer.ConstructRetainer(retainer, ancestryId, null);
 
             var json = JsonConvert.SerializeObject(retainer, new JsonSerializerSettings
             {
@@ -43,7 +60,7 @@ namespace BonemotherGames.Controllers
         { 
             Retainer retainer = new Retainer();
             retainer.RetainerClass = retainer.GetRetainerClass(retainerClassId);
-            retainer.ConstructRetainerWithSubancestry(retainer, ancestryId, subancestryId);
+            retainer.ConstructRetainer(retainer, null, null);
 
             var json = JsonConvert.SerializeObject(retainer, new JsonSerializerSettings
             {

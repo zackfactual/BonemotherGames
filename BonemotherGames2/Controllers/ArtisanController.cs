@@ -12,7 +12,7 @@ namespace BonemotherGames2.Controllers
         public string Get(int artisanLookupId)
         {
             Artisan artisan = new Artisan();
-            artisan = artisan.ConstructArtisan(artisanLookupId);
+            artisan = artisan.ConstructArtisan(artisanLookupId, null, null);
             var json = JsonConvert.SerializeObject(artisan, new JsonSerializerSettings
             {
                 Formatting = Formatting.Indented,
@@ -25,7 +25,7 @@ namespace BonemotherGames2.Controllers
         public string Get(int artisanLookupId, int ancestryId)
         {
             Artisan artisan = new Artisan();
-            artisan = artisan.ConstructArtisanWithAncestry(artisanLookupId, ancestryId);
+            artisan = artisan.ConstructArtisan(artisanLookupId, ancestryId, null);
 
             var json = JsonConvert.SerializeObject(artisan, new JsonSerializerSettings
             {
@@ -39,7 +39,7 @@ namespace BonemotherGames2.Controllers
         public string Get(int artisanLookupId, int ancestryId, int subancestryId)
         {
             Artisan artisan = new Artisan();
-            artisan = artisan.ConstructArtisanWithSubancestry(artisanLookupId, ancestryId, subancestryId);
+            artisan = artisan.ConstructArtisan(artisanLookupId, ancestryId, subancestryId);
 
             var json = JsonConvert.SerializeObject(artisan, new JsonSerializerSettings
             {

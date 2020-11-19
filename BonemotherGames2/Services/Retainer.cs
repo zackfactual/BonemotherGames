@@ -24,69 +24,34 @@ namespace BonemotherGames.Services
 
         }
 
-        public Retainer ConstructRetainer(Retainer retainer)
+        public Retainer ConstructRetainer(Retainer retainer, int? ancestryId, int? subancestryId)
         {
-            retainer.Ancestry = AncestryGenerator.GetRandomAncestry(true, false);
-            if (retainer.Ancestry.SubancestryRequired)
+            using (var ctx = new BonemotherGamesContext())
             {
-                retainer.Subancestry = AncestryGenerator.GetRandomSubancestry(retainer.Ancestry.AncestryId);
-            }
-            if (retainer.Ancestry.SubancestryOptional)
-            {
-                using (var ctx = new BonemotherGamesContext())
+                retainer.Ancestry = ancestryId == null ? AncestryGenerator.GetRandomAncestry(true, false) : ctx.Ancestry.Where(x => x.AncestryId == ancestryId).First();
+                if (subancestryId == null)
                 {
-                    var rand = new Random();
-                    var subancestries = ctx.Subancestry.Where(x => x.AncestryId == retainer.Ancestry.AncestryId).ToList();
-                    var subancestryIndex = rand.Next(subancestries.Count + 1);
-                    retainer.Subancestry = subancestryIndex == subancestries.Count ? retainer.Subancestry = null : subancestries[subancestryIndex];
+                    if (retainer.Ancestry.SubancestryRequired)
+                    {
+                        retainer.Subancestry = AncestryGenerator.GetRandomSubancestry(retainer.Ancestry.AncestryId);
+                    }
+                    if (retainer.Ancestry.SubancestryOptional)
+                    {
+
+                        var rand = new Random();
+                        var subancestries = ctx.Subancestry.Where(x => x.AncestryId == retainer.Ancestry.AncestryId).ToList();
+                        var subancestryIndex = rand.Next(subancestries.Count + 1);
+                        retainer.Subancestry = subancestryIndex == subancestries.Count ? retainer.Subancestry = null : subancestries[subancestryIndex];
+                    }
                 }
-                
+                else
+                {
+                    retainer.Subancestry = ctx.Subancestry.Where(x => x.SubancestryId == subancestryId).First();
+                }
             }
             retainer.AncestryTraits = GetAncestryTraits(retainer.Ancestry.AncestryId);
             retainer.SubancestryTraits = retainer.Subancestry != null ? GetSubancestryTraits(retainer.Subancestry.SubancestryId) : null;
             retainer.Name = retainer.Subancestry == null ? CharacterNameGenerator.GetRandomAncestralName(retainer.Ancestry.AncestryId, null) : 
-                CharacterNameGenerator.GetRandomAncestralName(retainer.Ancestry.AncestryId, retainer.Subancestry.SubancestryId);
-            retainer.PrimaryAbilities = retainer.GetPrimaryAbilities(retainer.RetainerClass.RetainerClassId);
-            retainer.Saves = retainer.GetSaves(retainer.RetainerClass.RetainerClassId);
-            retainer.Skills = retainer.GetSkills(retainer.RetainerClass.RetainerClassId);
-            retainer.Actions = retainer.GetActions(retainer.RetainerClass.RetainerClassId);
-
-            return retainer;
-        }
-
-        public Retainer ConstructRetainerWithAncestry(Retainer retainer, int ancestryId)
-        {
-            using (var ctx = new BonemotherGamesContext())
-            {
-                retainer.Ancestry = ctx.Ancestry.Where(x => x.AncestryId == ancestryId).First();
-                if (retainer.Ancestry.SubancestryRequired)
-                {
-                    retainer.Subancestry = AncestryGenerator.GetRandomSubancestry(retainer.Ancestry.AncestryId);
-                }
-                
-            }
-            retainer.AncestryTraits = GetAncestryTraits(retainer.Ancestry.AncestryId);
-            retainer.SubancestryTraits = retainer.Subancestry != null ? GetSubancestryTraits(retainer.Subancestry.SubancestryId) : null;
-            retainer.Name = retainer.Subancestry == null ? CharacterNameGenerator.GetRandomAncestralName(retainer.Ancestry.AncestryId, null) :
-                CharacterNameGenerator.GetRandomAncestralName(retainer.Ancestry.AncestryId, retainer.Subancestry.SubancestryId);
-            retainer.PrimaryAbilities = retainer.GetPrimaryAbilities(retainer.RetainerClass.RetainerClassId);
-            retainer.Saves = retainer.GetSaves(retainer.RetainerClass.RetainerClassId);
-            retainer.Skills = retainer.GetSkills(retainer.RetainerClass.RetainerClassId);
-            retainer.Actions = retainer.GetActions(retainer.RetainerClass.RetainerClassId);
-
-            return retainer;
-        }
-
-        public Retainer ConstructRetainerWithSubancestry(Retainer retainer, int ancestryId, int subancestryId)
-        {
-            using (var ctx = new BonemotherGamesContext())
-            {
-                retainer.Ancestry = ctx.Ancestry.Where(x => x.AncestryId == ancestryId).First();
-                retainer.Subancestry = ctx.Subancestry.Where(x => x.SubancestryId == subancestryId).First();
-            }
-            retainer.AncestryTraits = GetAncestryTraits(retainer.Ancestry.AncestryId);
-            retainer.SubancestryTraits = retainer.Subancestry != null ? GetSubancestryTraits(retainer.Subancestry.SubancestryId) : null;
-            retainer.Name = retainer.Subancestry == null ? CharacterNameGenerator.GetRandomAncestralName(retainer.Ancestry.AncestryId, null) :
                 CharacterNameGenerator.GetRandomAncestralName(retainer.Ancestry.AncestryId, retainer.Subancestry.SubancestryId);
             retainer.PrimaryAbilities = retainer.GetPrimaryAbilities(retainer.RetainerClass.RetainerClassId);
             retainer.Saves = retainer.GetSaves(retainer.RetainerClass.RetainerClassId);

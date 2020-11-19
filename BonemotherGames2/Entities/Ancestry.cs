@@ -26,6 +26,7 @@ namespace BonemotherGames2.Entities
         public bool AllowUnit { get; set; }
         public bool SubancestryRequired { get; set; }
         public bool SubancestryOptional { get; set; }
+        public string UnitPrefix { get; set; }
 
         public virtual CreatureSize CreatureSize { get; set; }
         public virtual ICollection<FollowerChart> FollowerChart { get; set; }

@@ -44,11 +44,13 @@ namespace BonemotherGames2.Entities
         public virtual DbSet<RetainerTrait> RetainerTrait { get; set; }
         public virtual DbSet<RollableUnit> RollableUnit { get; set; }
         public virtual DbSet<Skill> Skill { get; set; }
+        public virtual DbSet<SpecialName> SpecialName { get; set; }
         public virtual DbSet<Subancestry> Subancestry { get; set; }
         public virtual DbSet<SubancestryLanguage> SubancestryLanguage { get; set; }
         public virtual DbSet<SubancestryRetainerTrait> SubancestryRetainerTrait { get; set; }
         public virtual DbSet<UnitEquipment> UnitEquipment { get; set; }
         public virtual DbSet<UnitExperience> UnitExperience { get; set; }
+        public virtual DbSet<UnitName> UnitName { get; set; }
         public virtual DbSet<UnitSize> UnitSize { get; set; }
         public virtual DbSet<UnitTrait> UnitTrait { get; set; }
         public virtual DbSet<UnitType> UnitType { get; set; }
@@ -95,6 +97,8 @@ namespace BonemotherGames2.Entities
                 entity.Property(e => e.AncestryName)
                     .IsRequired()
                     .HasMaxLength(64);
+
+                entity.Property(e => e.UnitPrefix).HasMaxLength(32);
 
                 entity.HasOne(d => d.CreatureSize)
                     .WithMany(p => p.Ancestry)
@@ -455,6 +459,23 @@ namespace BonemotherGames2.Entities
                     .HasMaxLength(16);
             });
 
+            modelBuilder.Entity<SpecialName>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.SpecialNameText).HasMaxLength(64);
+
+                entity.HasOne(d => d.AllyLookup)
+                    .WithMany()
+                    .HasForeignKey(d => d.AllyLookupId)
+                    .HasConstraintName("FK_SpecialNameAllyId");
+
+                entity.HasOne(d => d.PaladinMountLookup)
+                    .WithMany()
+                    .HasForeignKey(d => d.PaladinMountLookupId)
+                    .HasConstraintName("FK_SpecialNameMountId");
+            });
+
             modelBuilder.Entity<Subancestry>(entity =>
             {
                 entity.Property(e => e.SubancestryName)
@@ -518,6 +539,25 @@ namespace BonemotherGames2.Entities
                 entity.Property(e => e.UnitExperienceName)
                     .IsRequired()
                     .HasMaxLength(16);
+            });
+
+            modelBuilder.Entity<UnitName>(entity =>
+            {
+                entity.Property(e => e.UnitNameText)
+                    .IsRequired()
+                    .HasMaxLength(64);
+
+                entity.HasOne(d => d.UnitSize)
+                    .WithMany(p => p.UnitName)
+                    .HasForeignKey(d => d.UnitSizeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UnitNameSizeId");
+
+                entity.HasOne(d => d.UnitType)
+                    .WithMany(p => p.UnitName)
+                    .HasForeignKey(d => d.UnitTypeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UnitNameTypeId");
             });
 
             modelBuilder.Entity<UnitSize>(entity =>

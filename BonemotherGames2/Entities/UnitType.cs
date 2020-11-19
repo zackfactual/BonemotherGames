@@ -8,6 +8,7 @@ namespace BonemotherGames2.Entities
         public UnitType()
         {
             RollableUnit = new HashSet<RollableUnit>();
+            UnitName = new HashSet<UnitName>();
         }
 
         public int UnitTypeId { get; set; }
@@ -20,5 +21,6 @@ namespace BonemotherGames2.Entities
         public double CostModifier { get; set; }
 
         public virtual ICollection<RollableUnit> RollableUnit { get; set; }
+        public virtual ICollection<UnitName> UnitName { get; set; }
     }
 }

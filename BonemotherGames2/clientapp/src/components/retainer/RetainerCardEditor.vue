@@ -1,27 +1,31 @@
 ﻿<template>
     <div class="retainer-card-editor">
         <input type="text" name="retainerName" v-model="editedRetainer.Name">
-        <generic-select v-if="Object.keys(availableSubancestries[selectedAncestryId]).length"
+        <generic-select v-if="availableSubancestries[selectedAncestryId] && Object.keys(availableSubancestries[selectedAncestryId]).length"
                         :default-value="defaultSubancestry"
                         :default-enabled="!editedRetainer.Ancestry.SubancestryRequired"
                         :option-object="availableSubancestries[selectedAncestryId]"
-                        option-key-selector="SubancestryId"
                         option-text-selector="SubancestryName"
                         option-value-selector="SubancestryId"
                         name="retainerSubancestry"
-                        @selected="selectSubancestry($event)">
+                        @selected="$emit('select-subancestry', $event)">
             Subancestry
         </generic-select>
         <generic-select name="retainerAncestry"
                         :default-value="defaultAncestry"
                         :option-object="availableAncestries"
-                        option-key-selector="AncestryId"
                         option-text-selector="AncestryName"
                         option-value-selector="AncestryId"
-                        @selected="selectAncestry($event)">Ancestry</generic-select>
+                        @selected="$emit('select-ancestry', $event)">Ancestry</generic-select>
         <h3 v-if="editedRetainer">
             {{ editedRetainer.RetainerClass.ClassName }}
         </h3>
+        <generic-select name="retainerClass"
+                        :default-value="retainer.RetainerClass.RetainerClassId"
+                        :option-object="availableRetainerClasses"
+                        option-text-selector="ClassName"
+                        option-value-selector="RetainerClassId"
+                        @selected="$emit('select-retainer-class', $event)">Class</generic-select>
     </div>
 </template>
 
@@ -39,9 +43,17 @@ export default {
         CardMixin
     ],
     props: {
-        availableClasses: {
-            type: Array,
-            default: () => []
+        availableAncestries: {
+            type: Object,
+            default: () => {}
+        },
+        availableSubancestries: {
+            type: Object,
+            default: () => { }
+        },
+        availableRetainerClasses: {
+            type: Object,
+            default: () => { }
         },
         retainer: {
             type: Object,
@@ -50,11 +62,7 @@ export default {
     },
     data () {
         return {
-            availableAncestries: {},
-            ancestryOptions: [],
-            availableSubancestries: {},
             editedRetainer: null,
-            loading: false,
             selectedClassId: null
         }
     },
@@ -71,62 +79,6 @@ export default {
     },
     beforeMount () {
         this.editedRetainer = this.retainer
-        this.getAvailableAncestries()
-        this.getAvailableSubancestries(false)
-    },
-    methods: {
-        getAvailableAncestries() {
-            this.loading = true
-            axios.get('/ancestry')
-                .then(result => {
-                    this.availableAncestries = result.data.reduce((ancestries, ancestry) => {
-                        ancestries[ancestry.AncestryId] = ancestry
-                        return ancestries
-                    }, {})
-                    this.loading = false
-                })
-        },
-        getAvailableSubancestries (resetSubancestry) {
-            this.loading = true
-            const ancestryId = this.editedRetainer.Ancestry.AncestryId
-            if (!this.availableSubancestries[ancestryId]) {
-                axios.get(`/subancestry/${ancestryId}`)
-                    .then(result => {
-                        const subancestries = result.data.reduce((subancestries, subancestry) => {
-                            subancestries[subancestry.SubancestryId] = subancestry
-                            return subancestries
-                        }, {})
-                        this.$set(this.availableSubancestries, ancestryId, subancestries)
-                        if (resetSubancestry) {
-                            this.resetSubancestry()
-                        }
-                        this.loading = false
-                    })
-            } else {
-                this.loading = false
-                if (resetSubancestry) {
-                    this.resetSubancestry()
-                }
-            }
-        },
-        resetSubancestry () {
-            if (this.editedRetainer.Ancestry.SubancestryRequired) {
-                const subancestryKeys = Object.keys(this.availableSubancestries[this.selectedAncestryId])
-                this.$set(this.editedRetainer, 'Subancestry', this.availableSubancestries[this.selectedAncestryId][subancestryKeys[0]])
-            } else {
-                this.$set(this.editedRetainer, 'Subancestry', null)
-            }
-        },
-        selectAncestry (ancestryId) {
-            const redirectQuery = { followerName: this.editedRetainer.Name, ancestry: ancestryId }
-            this.$router.push({ path: `/retainer_card/${this.editedRetainer.RetainerClass.RetainerClassId}`, query: redirectQuery })
-            this.$set(this.editedRetainer, 'Ancestry', this.availableAncestries[ancestryId])
-            this.getAvailableSubancestries(true)
-        },
-        selectSubancestry(subancestryId) {
-            const selectedSubancestry = this.availableSubancestries[this.selectedAncestryId][subancestryId]
-            this.$set(this.editedRetainer, 'Subancestry', selectedSubancestry)
-        }
     }
 }
 </script>

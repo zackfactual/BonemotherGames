@@ -3,7 +3,7 @@
         <option v-if="defaultEnabled" value="-1"><slot /></option>
         <option v-else value="-1"><slot /></option>
         <option v-for="option in options"
-                :key="`option-${option[optionKeySelector]}`"
+                :key="`option-${option[optionValueSelector]}`"
                 :value="option[optionValueSelector]">
             {{ option[optionTextSelector] }}
         </option>
@@ -32,10 +32,6 @@ export default {
         optionObject: {
             type: Object,
             default: () => {}
-        },
-        optionKeySelector: {
-            type: String,
-            default: 'id'
         },
         optionTextSelector: {
             type: String,

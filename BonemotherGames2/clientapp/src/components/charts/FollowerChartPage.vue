@@ -8,13 +8,19 @@
         <b-modal id="redirect-modal" title="Your Roll" @ok="confirmRedirectModal">
             <h3><span v-if="followerRoll != null">{{ followerRoll }}: </span>{{ selectedFollower ? selectedFollower.FollowerName : '' }}</h3>
 
-            <div v-if="selectedFollower && selectedFollower.FollowerTypeId != 5
+            <div v-if="selectedFollower && selectedFollower.FollowerTypeId != 1
+                 && selectedFollower.FollowerTypeId != 5
                  && selectedFollower.FollowerTypeId != 6
                  && selectedFollower.FollowerTypeId != 7
                  && selectedFollower.FollowerTypeId != 8
                  && selectedFollower.FollowerTypeId != 9">
                 <label for="name">Optional Name: </label>
                 <input type="text" id="nameInput" name="name" v-model="followerName"><br><br>
+            </div>
+
+            <div v-if="selectedFollower && selectedFollower.FollowerTypeId == 1">
+                <label for="unitName">Optional Name: </label>
+                <input type="text" id="unitNameInput" name="unitName" v-model="unitName" />
             </div>
            
             <div v-if="selectedFollower && (selectedFollower.FollowerTypeId === 1 ||
@@ -68,6 +74,7 @@ export default {
             availableSubancestries: {},
             chartData: [],
             followerName: null,
+            unitName: null,
             followerRoll: null,
             selectedFollower: null,
             leaderClasses: [],
@@ -114,6 +121,13 @@ export default {
             axios.get(nameUrl)
                 .then(result => {
                     this.followerName = result.data
+                })
+        },
+        getUnitName() {
+            let unitUrl = `/militaryunit/${this.selectedAncestryId}`
+            axios.get(unitUrl)
+                .then(result => {
+                    this.unitName = result.data.Name
                 })
         },
         redirectToAllyChart () {
@@ -235,10 +249,12 @@ export default {
                         }
                         this.setDefaultSubancestry()
                         this.getRandomName()
+                        this.getUnitName()
                     })
             } else {
                 this.setDefaultSubancestry()
                 this.getRandomName()
+                this.getUnitName()
             }
         },
         selectLeaderClass () {

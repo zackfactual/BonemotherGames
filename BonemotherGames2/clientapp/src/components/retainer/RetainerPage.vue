@@ -6,7 +6,7 @@
                               v-bind="{ availableAncestries, availableSubancestries, availableRetainerClasses }"
                               @select-ancestry="selectAncestry($event)"
                               @select-subancestry="selectSubancestry($event)"
-                              @select-retainer-classs="selectRetainerClass($event)" />
+                              @select-retainer-class="selectRetainerClass($event)" />
     </div>
 </template>
 
@@ -44,10 +44,10 @@ export default {
         this.getAvailableRetainerClasses()
     },
     methods: {
-        formatAbilities (abilityArray) {
+        formatAbilities (abilityArray, abilityKey) {
             let abilityString = ""
             abilityArray.forEach((ability, index) => {
-                abilityString = abilityString.concat(ability.AbilityName)
+                abilityString = abilityString.concat(ability[abilityKey])
                 if (index + 1 !== abilityArray.length) {
                     abilityString = abilityString.concat(", ")
                 }
@@ -61,9 +61,9 @@ export default {
                     this.retainer = result.data
                     this.retainer.Name = this.$route.query.followerName || this.retainer.Name
                     // Abilities
-                    this.retainer.primaryAbilities = this.formatAbilities(this.retainer.PrimaryAbilities)
-                    this.retainer.saves = this.formatAbilities(this.retainer.Saves)
-                    this.retainer.currentSkills = this.formatAbilities(this.retainer.Skills)
+                    this.retainer.primaryAbilities = this.formatAbilities(this.retainer.PrimaryAbilities, 'AbilityName')
+                    this.retainer.saves = this.formatAbilities(this.retainer.Saves, 'AbilityName')
+                    this.retainer.currentSkills = this.formatAbilities(this.retainer.Skills, 'SkillName')
                     this.retainer.signatureDescription = this.retainer.Actions[0].ActionDescription
                     this.retainer.signatureName = this.retainer.Actions[0].ActionName
                     this.retainer.otherAbilities = this.retainer.Actions.slice(1).map((ability, index) => {
@@ -72,6 +72,12 @@ export default {
                     })
                     // Wait until we have retainer data to grab available subancestries so we know which ancestry to start with
                     this.getAvailableSubancestries(false, false)
+                })
+        },
+        getAncestryTraits () {
+            axios.get(`/ancestryTrait/${this.selectedAncestryId}`)
+                .then(result => {
+                    this.$set(this.retainer, 'AncestryTraits', result.data)    
                 })
         },
         getAvailableAncestries () {
@@ -98,10 +104,8 @@ export default {
                             this.getRetainerName()
                         }
                     })
-            } else {
-                if (resetSubancestry) {
-                    this.resetSubancestry()
-                }
+            } else if (resetSubancestry) {
+                this.resetSubancestry()
             }
         },
         getAvailableRetainerClasses () {
@@ -136,15 +140,18 @@ export default {
         selectAncestry (ancestryId) {
             this.$set(this.retainer, 'Ancestry', this.availableAncestries[ancestryId])
             this.getAvailableSubancestries(true, true)
+            this.getAncestryTraits()
         },
         selectRetainerClass (classId) {
             this.$set(this.retainer, 'RetainerClass', this.availableRetainerClasses[classId])
             this.updatePath()
+            this.getRetainer()
         },
         selectSubancestry (subancestryId) {
             const newSubancestry = this.availableSubancestries[this.selectedAncestryId][subancestryId]
+            const oldSubancestryNameRequired = this.retainer.Subancestry && this.retainer.Subancestry.NameRequired
             this.$set(this.retainer, 'Subancestry', newSubancestry)
-            if (newSubancestry.NameRequired) {
+            if (newSubancestry.NameRequired || oldSubancestryNameRequired) {
                 this.getRetainerName()
             }
             this.updatePath()

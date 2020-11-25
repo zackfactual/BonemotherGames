@@ -3,7 +3,7 @@
         <h2>
             <span>{{ retainer.Name }}</span>
         </h2>
-        <h3><span v-if="retainer.Subancestry != null">{{ retainer.Subancestry.SubancestryName }} </span><span v-if="retainer.Ancestry.AncestryName.toLowerCase() != 'gith'">{{ retainer.Ancestry.AncestryName }}</span> | {{ retainer.RetainerClass.ClassName }}</h3>
+        <h3><span v-if="retainer.Subancestry">{{ retainer.Subancestry.SubancestryName }} </span><span v-if="retainer.Ancestry.AncestryName.toLowerCase() != 'gith'">{{ retainer.Ancestry.AncestryName }}</span> | {{ retainer.RetainerClass.ClassName }}</h3>
         <div>
             <span class="detail-label">Primary Ability: </span>
             <span>{{ retainer.primaryAbilities }}</span>

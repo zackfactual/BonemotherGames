@@ -1,9 +1,9 @@
 ﻿<template>
     <div class="retainer-card-editor">
-        <input type="text" name="retainerName" v-model="editedRetainer.Name">
+        <input type="text" name="retainerName" v-model="retainer.Name">
         <generic-select v-if="availableSubancestries[selectedAncestryId] && Object.keys(availableSubancestries[selectedAncestryId]).length"
                         :default-value="defaultSubancestry"
-                        :default-enabled="!editedRetainer.Ancestry.SubancestryRequired"
+                        :default-enabled="!retainer.Ancestry.SubancestryRequired"
                         :option-object="availableSubancestries[selectedAncestryId]"
                         option-text-selector="SubancestryName"
                         option-value-selector="SubancestryId"
@@ -17,9 +17,6 @@
                         option-text-selector="AncestryName"
                         option-value-selector="AncestryId"
                         @selected="$emit('select-ancestry', $event)">Ancestry</generic-select>
-        <h3 v-if="editedRetainer">
-            {{ editedRetainer.RetainerClass.ClassName }}
-        </h3>
         <generic-select name="retainerClass"
                         :default-value="retainer.RetainerClass.RetainerClassId"
                         :option-object="availableRetainerClasses"
@@ -60,25 +57,16 @@ export default {
             required: true
         }
     },
-    data () {
-        return {
-            editedRetainer: null,
-            selectedClassId: null
-        }
-    },
     computed: {
         defaultAncestry () {
-            return this.editedRetainer.Ancestry.AncestryId
+            return this.retainer.Ancestry.AncestryId
         },
         defaultSubancestry () {
-            return this.editedRetainer.Subancestry ? this.editedRetainer.Subancestry.SubancestryId : -1
+            return this.retainer.Subancestry ? this.retainer.Subancestry.SubancestryId : -1
         },
         selectedAncestryId () {
-            return this.editedRetainer.Ancestry.AncestryId
+            return this.retainer.Ancestry.AncestryId
         }
-    },
-    beforeMount () {
-        this.editedRetainer = this.retainer
     }
 }
 </script>
